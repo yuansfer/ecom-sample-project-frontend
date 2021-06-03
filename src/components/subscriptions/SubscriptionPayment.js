@@ -317,9 +317,9 @@ class SubscriptionPayment extends Component {
 									</div>
 									<div className={"col-xl-6 col-lg-6 col-md-12 col-sm-12"} >
 										<div className={"billing_details"}>
-											<div className={"col-md-12 form-group p_star mb-20"}>
+											<div className={"row contact_form col-md-12 form-group p_star mb-20"}>
 												<label>Payment Method</label>
-												<select className={`form-control ${formErrors.paymentMethod ? 'is-invalid' : ''}`}
+												<select className={`country_select form-control ${formErrors.paymentMethod ? 'is-invalid' : ''}`}
 													name="paymentMethod" onChange={this._handleChange} value={paymentMethod}>
 													<option value="" disabled>Select Payment Method</option>
 													{Object.entries(_RECURRING_PAYMENT_METHODS).map(([key, value]) => <option key={key} value={value}>{key}</option>)}
