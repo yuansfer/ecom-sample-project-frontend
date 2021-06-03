@@ -99,10 +99,14 @@ class ProductView extends Component {
 		this.props.addSubscriptionBegin({ customer_id: customerId, product_id: id, qty: qty, size: size, purchase_mode: 'subscribe', subscribe_month: 1 });
 	}
 
-	_handleUserInput(e) {
+	_handleUserInput = (e) => {
+		console.log('this.state', this.state)
+
 		const name = e.target.name;
 		const value = e.target.value;
 		this.setState({ [name]: value });
+
+
 	}
 
 	_handleUpdateQty(flag) {
@@ -115,7 +119,7 @@ class ProductView extends Component {
 	render() {
 		const { product, size, qty, mode } = this.state;
 
-		let sizeOptions = Object.entries(_SIZE).map(([key, value]) => <option key={key} value={value}>{key}</option>);
+		const sizeOptions = Object.entries(_SIZE).map(([key, value]) => <option key={key} value={value}>{key}</option>);
 
 		return (
 			<>
@@ -163,6 +167,7 @@ class ProductView extends Component {
 												<div className={"size-wrapper"}>
 													<div className={"select-size"}>
 														<label className={"size"}>Size</label>
+														{size}
 														<select className={"nice-select"} name="size" id={"size"} value={size} onChange={(event) => this._handleUserInput(event)}>
 															{sizeOptions}
 														</select>

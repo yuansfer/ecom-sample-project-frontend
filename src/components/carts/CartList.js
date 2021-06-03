@@ -8,10 +8,8 @@ import { _getKeyByValue } from "../../utils/helper";
 import { _ROUTES, _SIZE } from "../../constants/GlobalSetting";
 
 class CartList extends Component {
-	constructor(props) {
-		super(props);
 
-		this.state = {
+	state = {
 			cartId: localStorage.getItem('cartId'),
 			products: [],
 			selectedProducts: [],
@@ -19,12 +17,6 @@ class CartList extends Component {
 			subTotal: 0,
 			checkedItems: new Map()
 		};
-
-		[
-			'_handleBuyNow',
-			'_handleRemoveCartProduct'
-		].map((fn) => this[fn] = this[fn].bind(this));
-	}
 
 	componentDidMount() {
 		this._loadCartProducts()
@@ -89,19 +81,7 @@ class CartList extends Component {
 		}
 	}
 
-	_handleBuyNow() {
-		this.props.history.push(_ROUTES.INFORMATION)
-	}
-
-	/*
-	_handleProductsSelect(event, p) {
-		var isChecked = event.target.checked;
-		var item = event.target.value;
-	}
-	*/
-
-	_handleRemoveCartProduct(p) {
-
+	_handleRemoveCartProduct = (p) => {
 		const { cartId } = this.state;
 		const { product_id, cart_product_id } = p;
 
@@ -203,7 +183,7 @@ class CartList extends Component {
 													</tbody>
 												</table>
 												<div className={"checkout_btn_inner float-right"}>
-													<a className={"btn_1 text-uppercase mb-15"} href={"#"} onClick={() => this._handleBuyNow()}>Buy Now</a>
+													<a className={"btn_1 text-uppercase mb-15"} href={_ROUTES.INFORMATION}>Buy Now</a>
 												</div>
 											</div>
 										</div>

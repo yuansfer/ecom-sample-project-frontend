@@ -4,23 +4,27 @@ import { connect } from "react-redux";
 import { Form, Modal } from 'react-bootstrap';
 import _ from 'lodash';
 
-import { cancelAutoPayBegin } from "../../store/payment/actions";
+import { generateRefundBegin, cancelAutoPayBegin } from "../../store/payment/actions";
 import { getOrdersBegin } from "../../store/order/actions";
 import { _getKeyByValue } from "../../utils/helper";
 import { _PAYMENT_METHODS } from "../../constants/GlobalSetting";
 
 //import ErrorModal from '../common/ErrorModal';
-class CustomerSubscriptionsList extends Component {
+class RefundCancel extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			customerId: localStorage.getItem('customerId'),
 			payments: [],
 			validated: false,
 
+			selectedRefund: [],
 			selectedCancel: [],
+
+			refundModal: false,
 			cancelModal: false,
+
+			isRefundLoading: false,
 			isCancelLoading: false,
 
 			successModal: false,
@@ -33,25 +37,22 @@ class CustomerSubscriptionsList extends Component {
 		};
 
 		[
+			'_handleCloseRefundModal',
+			'_handleDisplayRefundModel',
+			'_generateRefund',
 			'_handleCloseCancelAutoPayModal',
 			'_handleDisplayCancelAutoPayModel',
 			'_cancelAutoPay',
+
 		].map((fn) => this[fn] = this[fn].bind(this));
 	}
 
 	componentDidMount() {
-		this._loadOrders()
-	}
-
-	_loadOrders() {
-		const { customerId } = this.state;
-		if (customerId) {
-			this.props.getOrdersBegin({ customer_id: customerId, purchase_mode: 'subscribe' });
-		}
+		this.props.getOrdersBegin();
 	}
 
 	componentDidUpdate(prevProps) {
-		const { list, cancelAutoPay } = this.props;
+		const { list, generateRefund, cancelAutoPay } = this.props;
 
 		if (prevProps.list !== list) {
 			const { result: { data, success } } = list;
@@ -61,10 +62,23 @@ class CustomerSubscriptionsList extends Component {
 
 					const _payments = _.map((data || []), order => {
 
-						const { id, customer_id, customer, products, subscribe_payment, cancel_subscription } = order;
+						const { id, customer_id, customer, products, payment, refund, subscribe_payment, cancel_subscription } = order;
 						const { purchase_mode } = products[0];
 
-						if (purchase_mode === 'subscribe') {
+						if (purchase_mode === 'buy') {
+							if (payment && payment.id) {
+								return {
+									purchase_mode: purchase_mode,
+									order_id: id,
+									customer_id: customer_id,
+									customer_name: [_.get(customer, 'firstname', ''), _.get(customer, 'lastname', '')].join(' '),
+									payment_id: payment.id,
+									vendor: _getKeyByValue(_PAYMENT_METHODS, payment.vendor),
+									allow_to_refund_or_cancel: refund ? false : true,
+									paid_amount: payment.paid_amount,
+								};
+							}
+						} else {
 
 							if (subscribe_payment && subscribe_payment.id) {
 								const vendor = _.get(subscribe_payment, 'recurring_auth.vendor', '')
@@ -93,12 +107,44 @@ class CustomerSubscriptionsList extends Component {
 			}
 		}
 
+		if (prevProps.generateRefund !== generateRefund) {
+
+			const { result: { data, success, message } } = generateRefund;
+
+			if (success) {
+				const { ret_code, ret_msg, result: { status } } = data[0]
+				if (ret_code === '000100' && status === 'success') {
+
+					this.setState({
+						refundModal: false,
+						isRefundLoading: false,
+						successModal: true,
+						successModalTitle: 'Generate Refund Success',
+						successModalBody: "Refund request generated successfully",
+					})
+
+					this.props.getOrdersBegin();
+				} else {
+					this.setState({
+						errorModal: true,
+						errorModalTitle: 'Generate Refund Error',
+						errorModalBody: ret_msg,
+					})
+				}
+			} else {
+				this.setState({
+					errorModal: true,
+					errorModalTitle: 'Generate Refund Error',
+					errorModalBody: message,
+				})
+			}
+		}
 
 		if (prevProps.cancelAutoPay !== cancelAutoPay) {
 			const { result: { data, success, message } } = cancelAutoPay;
 
 			if (success) {
-				const { ret_code, ret_msg } = data[0]
+				const { ret_code, ret_msg, } = data[0]
 				if (ret_code === '000100') {
 
 					this.setState({
@@ -118,7 +164,7 @@ class CustomerSubscriptionsList extends Component {
 						errorModalBody: ret_msg,
 					})
 				}
-				this._loadOrders()
+				this.props.getOrdersBegin();
 			} else {
 				this.setState({
 					cancelModal: false,
@@ -133,9 +179,16 @@ class CustomerSubscriptionsList extends Component {
 
 	_handleCheck(e, p) {
 		const { customer_id, order_id, auto_debit_no } = p;
-		let { selectedCancel } = this.state;
+		let { selectedRefund, selectedCancel } = this.state;
 
-		if (p.purchase_mode === 'subscribe') {
+		if (p.purchase_mode === 'buy') {
+			if (e.target.checked) {
+				selectedRefund.push({ customer_id: customer_id, order_id: order_id })
+			} else {
+				selectedRefund = selectedRefund.filter(v => v.customer_id !== customer_id && v.order_id !== order_id);
+			}
+			this.setState({ selectedRefund: selectedRefund })
+		} else {
 			if (e.target.checked) {
 				selectedCancel.push({ customer_id: customer_id, order_id: order_id, auto_debit_no: auto_debit_no })
 			} else {
@@ -144,6 +197,37 @@ class CustomerSubscriptionsList extends Component {
 			this.setState({ selectedCancel: selectedCancel })
 		}
 	}
+
+	/* Refund [START] */
+	_handleCloseRefundModal() {
+		this.setState({
+			refundModal: false
+		})
+	}
+
+	_handleDisplayRefundModel() {
+		if (this.state.selectedRefund.length > 0) {
+			this.setState({
+				refundModal: true
+			})
+		} else {
+			this.setState({
+				errorModal: true,
+				errorModalTitle: 'Generate Refund Error',
+				errorModalBody: 'Please select transaction for refund',
+			})
+		}
+	}
+
+	_generateRefund() {
+		const { selectedRefund } = this.state;
+		this.setState({ isRefundLoading: true, refundModal: false })
+		for (const sr of selectedRefund) {
+			const { customer_id, order_id } = sr
+			this.props.generateRefundBegin({ customer_id: customer_id, order_id: order_id });
+		}
+	}
+	/* Refund [END] */
 
 	/* Cancel Auto Pay [START] */
 	_handleCloseCancelAutoPayModal() {
@@ -178,11 +262,11 @@ class CustomerSubscriptionsList extends Component {
 
 	render() {
 
-		const { payments, validated, cancelModal, isCancelLoading, selectedCancel, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
+		const { payments, validated, refundModal, cancelModal, isRefundLoading, isCancelLoading, selectedRefund, selectedCancel, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
 
-		console.log('payments', payments)
+		console.log('selectedRefund', selectedRefund)
 		console.log('selectedCancel', selectedCancel)
-		console.log(payments.length)
+
 		return (
 			<>
 				<main>
@@ -191,7 +275,7 @@ class CustomerSubscriptionsList extends Component {
 							<div className={"row justify-content-center"}>
 								<div className={"col-xl-7 col-lg-8 col-md-10"}>
 									<div className={"section-tittle mb-50 text-center"}>
-										<h2>Subscription Products</h2>
+										<h2>Refund and Cancel</h2>
 									</div>
 								</div>
 							</div>
@@ -200,7 +284,7 @@ class CustomerSubscriptionsList extends Component {
 								? <div className={"row justify-content-center"}>
 									<div className={"col-xl-7 col-lg-8 col-md-10"}>
 										<div className={"section-tittle mb-50 text-center"}>
-											<h5>No Subscription Products Found</h5>
+											<h5>No Recent Transaction Found</h5>
 										</div>
 									</div>
 								</div>
@@ -216,6 +300,7 @@ class CustomerSubscriptionsList extends Component {
 																<th scope="col">Customer</th>
 																<th scope="col">Amount</th>
 																<th scope="col">Method</th>
+																<th scope="col" className={"text-center"}>Refund?</th>
 																<th scope="col" className={"text-center"}>Cancel Subscriptions?</th>
 															</tr>
 														</thead>
@@ -231,18 +316,27 @@ class CustomerSubscriptionsList extends Component {
 																			</span>
 																		</td>
 																		<td className={"darkGray-bg"}>
-																			<span className={"amnt"}>${
-																				p.paid_amount}</span>
+																			<span className={"amnt"}>${p.paid_amount}</span>
 																		</td>
 																		<td className={"darkGray-bg"}>
 																			<span className={"payMethod"}>{p.vendor}</span>
 																		</td>
 
 																		<td align="center">
+																			<label htmlFor={"refund-" + p.order_id}>
+																				<div>
+																					<input type="checkbox" disabled={p.purchase_mode === 'buy' ? (p.allow_to_refund_or_cancel ? false : true) : true} className={"checkbox cursor-pointer"} name={"refund-" + p.order_id} id={"refund-" + p.order_id} onChange={(e) => this._handleCheck(e, p)}
+																					/>
+																					<span className={"check-icon"}></span>
+																				</div>
+																			</label>
+																		</td>
+
+																		<td align="center">
 																			<label htmlFor={"cancel-" + p.order_id}>
 																				<div>
 																					<input type="checkbox"
-																						disabled={p.purchase_mode === 'subscribe' ? (p.allow_to_refund_or_cancel ? false : true) : true} className={"checkbox"} name={"cancel-" + p.order_id}
+																						disabled={p.purchase_mode === 'subscribe' ? (p.allow_to_refund_or_cancel ? false : true) : true} className={"checkbox cursor-pointer"} name={"cancel-" + p.order_id}
 																						id={"cancel-" + p.order_id}
 																						onChange={(e) => this._handleCheck(e, p)}
 																					/>
@@ -257,8 +351,13 @@ class CustomerSubscriptionsList extends Component {
 														</tbody>
 													</table>
 												</div>
-												<div className={"refundBtn_inner float-right"}>
-													<button type="button" disabled={isCancelLoading} className={"btn_1 text-uppercase mb-15"} onClick={() => this._handleDisplayCancelAutoPayModel()}>
+												<div className={"refundBtn_inner float-right"} >
+
+													<button type="button" disabled={isRefundLoading} className={"btn_1 text-uppercase mb-15 cursor-pointer"} onClick={() => this._handleDisplayRefundModel()}>
+														{isRefundLoading ? 'Loading…' : 'Make Refund'}
+													</button>
+													{" "}
+													<button type="button" disabled={isCancelLoading} className={"btn_1 text-uppercase mb-15 cursor-pointer"} onClick={() => this._handleDisplayCancelAutoPayModel()}>
 														{isCancelLoading ? 'Loading…' : 'Cancel AutoPay'}
 													</button>
 												</div>
@@ -266,10 +365,25 @@ class CustomerSubscriptionsList extends Component {
 										</Form>
 									</div>
 								</div>
-							}
-						</div>
+
+							}</div>
 					</section>
 				</main>
+
+				{/* REFUND MODAL [START] */}
+				<Modal show={refundModal}
+					aria-labelledby="contained-modal-title-vcenter"
+					centered>
+					<Modal.Header>
+						<Modal.Title>Generate Refund Confirmation</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>Are you sure you want to generate refund?</Modal.Body>
+					<Modal.Footer>
+						<input type="button" className={"btn_danger text-uppercase"} value="No" onClick={() => this._handleCloseRefundModal()} />
+						<input type="button" className={"btn_1 text-uppercase"} value="Yes" onClick={() => this._generateRefund()} />
+					</Modal.Footer>
+				</Modal>
+				{/* REFUND MODAL [END]*/}
 
 				{/* CANCEL AUTO PAY MODAL [START] */}
 				<Modal show={cancelModal}
@@ -288,7 +402,7 @@ class CustomerSubscriptionsList extends Component {
 
 				{/* ERROR MODAL [START] */}
 				<Modal show={errorModal}
-					onHide={() => this.setState({ errorModal: false, isCancelLoading: false })}
+					onHide={() => this.setState({ errorModal: false, isRefundLoading: false, isCancelLoading: false })}
 					aria-labelledby="contained-modal-title-vcenter"
 					centered closeButton>
 					<Modal.Header>
@@ -300,9 +414,8 @@ class CustomerSubscriptionsList extends Component {
 
 				{/* SUCCESS MODAL [START] */}
 				<Modal
-					size="sm"
 					show={successModal}
-					onHide={() => this.setState({ successModal: false, isCancelLoading: false })}
+					onHide={() => this.setState({ successModal: false, isRefundLoading: false, isCancelLoading: false })}
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
 				>
@@ -322,13 +435,15 @@ class CustomerSubscriptionsList extends Component {
 const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'orders.list', {}),
+		generateRefund: _.get(state, 'payments.generateRefund', {}),
 		cancelAutoPay: _.get(state, 'payments.cancelAutoPay', {}),
 	};
 };
 
 const mapDispatchToProps = (dispatch) => ({
-	getOrdersBegin: (payload) => dispatch(getOrdersBegin(payload)),
+	getOrdersBegin: () => dispatch(getOrdersBegin()),
+	generateRefundBegin: (payload) => dispatch(generateRefundBegin(payload)),
 	cancelAutoPayBegin: (payload) => dispatch(cancelAutoPayBegin(payload)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerSubscriptionsList);
+export default connect(mapStateToProps, mapDispatchToProps)(RefundCancel);
