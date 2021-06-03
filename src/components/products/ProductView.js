@@ -167,7 +167,6 @@ class ProductView extends Component {
 												<div className={"size-wrapper"}>
 													<div className={"select-size"}>
 														<label className={"size"}>Size</label>
-														{size}
 														<select className={"nice-select"} name="size" id={"size"} value={size} onChange={(event) => this._handleUserInput(event)}>
 															{sizeOptions}
 														</select>
