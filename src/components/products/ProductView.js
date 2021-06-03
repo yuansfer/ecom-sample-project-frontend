@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { getProductBegin } from "../../store/product/actions";
 import { addToCartBegin, addSubscriptionBegin, getCartModeBegin } from "../../store/cart/actions";
 import { _ROUTES, _SIZE } from "../../constants/GlobalSetting";
+import ErrorModal from '../common/ErrorModal';
 
 class ProductView extends Component {
 
@@ -21,6 +22,8 @@ class ProductView extends Component {
 			product: {},
 			size: 'small',
 			mode: '',
+			showError: false,
+			errorMessage: '',
 		};
 
 		[
@@ -39,7 +42,6 @@ class ProductView extends Component {
 		if (customerId) {
 			this.props.getCartModeBegin({ customer_id: customerId });
 		}
-
 	}
 
 	componentDidUpdate(prevProps) {
@@ -53,7 +55,7 @@ class ProductView extends Component {
 		}
 
 		if (prevProps.added_to_cart !== added_to_cart) {
-			const { result: { data, success } } = added_to_cart;
+			const { result: { data, success, error } } = added_to_cart;
 			if (success) {
 				if (data[0].id) {
 					localStorage.setItem('cartId', data[0].id);
@@ -62,6 +64,11 @@ class ProductView extends Component {
 				if (localStorage.getItem('cartId')) {
 					this.props.history.push(_ROUTES.VIEW_CART)
 				}
+			} else {
+				this.setState({
+					showError: true,
+					errorMessage: error,
+				})
 			}
 		}
 
@@ -100,13 +107,9 @@ class ProductView extends Component {
 	}
 
 	_handleUserInput = (e) => {
-		console.log('this.state', this.state)
-
 		const name = e.target.name;
 		const value = e.target.value;
 		this.setState({ [name]: value });
-
-
 	}
 
 	_handleUpdateQty(flag) {
@@ -115,10 +118,13 @@ class ProductView extends Component {
 		}));
 	}
 
+	_onHide = ({ showError }) => {
+		this.setState({ showError })
+	}
 
 	render() {
-		const { product, size, qty, mode } = this.state;
 
+		const { product, size, qty, mode, showError, errorMessage } = this.state;
 		const sizeOptions = Object.entries(_SIZE).map(([key, value]) => <option key={key} value={value}>{key}</option>);
 
 		return (
@@ -189,6 +195,7 @@ class ProductView extends Component {
 						</div>
 					</div>
 				</main>
+				<ErrorModal showError={showError} title={"Error"} body={errorMessage} _onHide={this._onHide} />
 			</>
 		)
 	}

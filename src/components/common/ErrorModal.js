@@ -3,11 +3,6 @@ import { Modal } from 'react-bootstrap';
 
 class ErrorModal extends Component {
 
-	constructor(props) {
-		super(props);
-
-	}
-
 	_onHide = (params) => {
 		this.props._onHide(params)
 	}
@@ -16,15 +11,14 @@ class ErrorModal extends Component {
 
 		return (
 			<>
-				<Modal show={this.props.error_modal}
-					//onHide={() => this._onHide({ error_modal: false, isRefundLoading: false, isCancelLoading: false })}
-					onHide={() => this._onHide({ error_modal: false })}
+				<Modal show={this.props.showError}
+					onHide={() => this._onHide({ showError: false })}
 					aria-labelledby="contained-modal-title-vcenter"
-					centered closeButton>
-					<Modal.Header>
-						<Modal.Title>{this.props.error_modal_title}</Modal.Title>
+					centered>
+					<Modal.Header closeButton>
+						<Modal.Title>{this.props.title}</Modal.Title>
 					</Modal.Header>
-					<Modal.Body>{this.props.error_modal_body}</Modal.Body>
+					<Modal.Body>{this.props.body}</Modal.Body>
 				</Modal>
 			</>
 		)

@@ -6,17 +6,19 @@ import _ from 'lodash';
 import { getCartBegin, removeCartProductBegin } from "../../store/cart/actions";
 import { _getKeyByValue } from "../../utils/helper";
 import { _ROUTES, _SIZE } from "../../constants/GlobalSetting";
+import ErrorModal from '../common/ErrorModal';
 
 class CartList extends Component {
 
 	state = {
-			cartId: localStorage.getItem('cartId'),
-			products: [],
-			selectedProducts: [],
-			totalQty: 0,
-			subTotal: 0,
-			checkedItems: new Map()
-		};
+		cartId: localStorage.getItem('cartId'),
+		products: [],
+		selectedProducts: [],
+		totalQty: 0,
+		subTotal: 0,
+		showError: false,
+		errorMessage: '',
+	};
 
 	componentDidMount() {
 		this._loadCartProducts()
@@ -33,7 +35,7 @@ class CartList extends Component {
 		const { list, remove } = this.props;
 
 		if (prevProps.list !== list) {
-			const { result: { data, success } } = list;
+			const { result: { data, success, error } } = list;
 			if (success) {
 
 				if (data) {
@@ -71,7 +73,10 @@ class CartList extends Component {
 					})
 				}
 			} else {
-				// ERROR
+				this.setState({
+					showError: true,
+					errorMessage: error,
+				})
 			}
 		}
 
@@ -89,8 +94,12 @@ class CartList extends Component {
 		this.props.removeCartProductBegin(params);
 	}
 
+	_onHide = ({ showError }) => {
+		this.setState({ showError })
+	}
+
 	render() {
-		const { products, subTotal, } = this.state;
+		const { products, subTotal, showError, errorMessage } = this.state;
 
 		return (
 			<>
@@ -224,6 +233,7 @@ class CartList extends Component {
 						</div>
 					</section>
 				</main>
+				<ErrorModal showError={showError} title={"Error"} body={errorMessage} _onHide={this._onHide} />
 			</>
 		)
 	}

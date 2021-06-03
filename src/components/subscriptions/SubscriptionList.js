@@ -6,24 +6,17 @@ import _ from 'lodash';
 import { getCartBegin, updateCartProductBegin, removeCartProductBegin } from "../../store/cart/actions";
 import { _getKeyByValue } from "../../utils/helper";
 import { _ROUTES, _SIZE, _SUBSCRIPTION_MONTHS } from "../../constants/GlobalSetting";
+import ErrorModal from '../common/ErrorModal';
 
 class SubscriptionList extends Component {
-	constructor(props) {
-		super(props);
 
-		this.state = {
-			cartId: localStorage.getItem('cartId'),
-			products: [],
-			subTotal: [],
-		};
-
-		[
-			'_handleUpdateCartProduct',
-			'_handleRemoveCartProduct',
-			'_handleSubscribe',
-
-		].map((fn) => this[fn] = this[fn].bind(this));
-	}
+	state = {
+		cartId: localStorage.getItem('cartId'),
+		products: [],
+		subTotal: [],
+		showError: false,
+		errorMessage: '',
+	};
 
 	componentDidMount() {
 		this._loadCartProducts()
@@ -40,7 +33,7 @@ class SubscriptionList extends Component {
 		const { list, update, remove } = this.props;
 
 		if (prevProps.list !== list) {
-			const { result: { data, success } } = list;
+			const { result: { data, success, error } } = list;
 			if (success) {
 
 				if (data) {
@@ -78,31 +71,44 @@ class SubscriptionList extends Component {
 					})
 				}
 			} else {
-				// ERROR
+				this.setState({
+					showError: true,
+					errorMessage: error,
+				})
 			}
 		}
 
 		if (prevProps.update !== update) {
-			const { result: { success } } = update;
+			const { result: { success, error } } = update;
 			if (success) {
 				this._loadCartProducts()
+			} else {
+				this.setState({
+					showError: true,
+					errorMessage: error,
+				})
 			}
 		}
 
 		if (prevProps.remove !== remove) {
 			console.log('remove', remove)
-			const { result: { success } } = remove;
+			const { result: { success, error } } = remove;
 			if (success) {
 				this._loadCartProducts()
+			} else {
+				this.setState({
+					showError: true,
+					errorMessage: error,
+				})
 			}
 		}
 	}
 
-	_handleSubscribe() {
+	_handleSubscribe = () => {
 		this.props.history.push(_ROUTES.SUBSCRIPTION_INFORMATION)
 	}
 
-	_handleUpdateCartProduct(e, p, field) {
+	_handleUpdateCartProduct = (e, p, field) => {
 
 		const { cartId } = this.state;
 		const { cart_product_id, product_id, size } = p;
@@ -122,7 +128,7 @@ class SubscriptionList extends Component {
 		this.props.updateCartProductBegin(params);
 	}
 
-	_handleRemoveCartProduct(p) {
+	_handleRemoveCartProduct = (p) => {
 
 		const { cartId } = this.state;
 		const { product_id, cart_product_id } = p;
@@ -131,14 +137,18 @@ class SubscriptionList extends Component {
 		this.props.removeCartProductBegin(params);
 	}
 
+	_onHide = ({ showError }) => {
+		this.setState({ showError })
+	}
+
 	render() {
-		const { products, subTotal, } = this.state;
+		const { products, subTotal, showError, errorMessage } = this.state;
 
 		let months = Object.entries(_SUBSCRIPTION_MONTHS).map(([key, value]) =>
 			<option key={key} value={value}>{key}</option>
 		);
 
-		// let size = Object.entries(_SIZE).map(([key, value]) => <option key={key} value={value}>{key}</option>);
+	// let size = Object.entries(_SIZE).map(([key, value]) => <option key={key} value={value}>{key}</option>);
 
 		return (
 			<>
@@ -268,6 +278,7 @@ class SubscriptionList extends Component {
 						</div>
 					</section>
 				</main>
+				<ErrorModal showError={showError} title={"Error"} body={errorMessage} _onHide={this._onHide} />
 			</>
 		)
 	}
