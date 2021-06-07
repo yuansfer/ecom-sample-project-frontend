@@ -12,7 +12,7 @@ class ErrorModal extends Component {
 		return (
 			<>
 				<Modal show={this.props.showError}
-					onHide={() => this._onHide({ showError: false })}
+					onHide={() => this._onHide({ showError: false, isSubmitting: false })}
 					aria-labelledby="contained-modal-title-vcenter"
 					centered>
 					<Modal.Header closeButton>

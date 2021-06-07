@@ -24,7 +24,7 @@ class SubscriptionList extends Component {
 		this._loadCartProducts()
 	}
 
-	_loadCartProducts() {
+	_loadCartProducts = () => {
 		const { cartId } = this.state;
 		if (cartId) {
 			this.props.getCartBegin({ id: cartId, purchase_mode: 'subscribe' });

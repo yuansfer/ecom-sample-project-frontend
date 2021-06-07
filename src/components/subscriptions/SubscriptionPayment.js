@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux";
 
-import { Modal } from 'react-bootstrap';
 import queryString from 'query-string';
 import _ from 'lodash';
 
@@ -10,6 +9,7 @@ import { recurringAuthBegin, recurringPayBegin } from "../../store/payment/actio
 
 import { _getKeyByValue } from "../../utils/helper";
 import { _ROUTES, _RECURRING_PAYMENT_METHODS, _SIZE, _SUBSCRIPTION_MONTHS } from "../../constants/GlobalSetting";
+import ErrorModal from '../common/ErrorModal';
 
 class SubscriptionPayment extends Component {
 	constructor(props) {
@@ -42,9 +42,9 @@ class SubscriptionPayment extends Component {
 			monthlyTotal: 0,
 			tmp: params.tmp || "",
 
-			errorModal: false,
-			errorModalTitle: '',
-			errorModalBody: '',
+			showError: false,
+			errorTitle: '',
+			errorMessage: '',
 		};
 	}
 
@@ -112,12 +112,10 @@ class SubscriptionPayment extends Component {
 
 		if (prevProps.doRecurringAuth !== doRecurringAuth) {
 			const { result: { data, success, message } } = doRecurringAuth;
-			console.log('doRecurringAuth', doRecurringAuth)
 			if (success) {
 				let { authUrl } = data[0]
 
 				authUrl = decodeURI(authUrl)
-				console.log('authUrl', authUrl)
 				window.open(authUrl, "_self")
 				//window.open(authUrl, "_blank")
 			} else {
@@ -125,9 +123,9 @@ class SubscriptionPayment extends Component {
 				this.props.history.push(_ROUTES.SUBSCRIBE_PAYMENT_DECLINE)
 				this.setState({
 					isSubmitting: false,
-					errorModal: true,
-					errorModalTitle: 'Auth Error',
-					errorModalBody: message,
+					showError: true,
+					errorTitle: 'Auth Error',
+					errorMessage: message,
 				})
 			}
 		}
@@ -217,8 +215,12 @@ class SubscriptionPayment extends Component {
 		}
 	};
 
+	_onHide = ({ showError, isSubmitting }) => {
+		this.setState({ showError, isSubmitting })
+	}
+
 	render() {
-		const { products, todaysTotal, monthlyTotal, formValues: { paymentMethod }, formErrors, isSubmitting, errorModal, errorModalTitle, errorModalBody } = this.state;
+		const { products, todaysTotal, monthlyTotal, formValues: { paymentMethod }, formErrors, isSubmitting, showError, errorTitle, errorMessage } = this.state;
 
 		const logoUrl = paymentMethod ? `../../assets/images/payment/logos/${paymentMethod}.png` : ''
 
@@ -345,18 +347,7 @@ class SubscriptionPayment extends Component {
 						</div>
 					</section>
 				</main>
-
-				{/* ERROR MODAL [START] */}
-				<Modal show={errorModal}
-					onHide={() => this.setState({ errorModal: false, isSubmitting: false })}
-					aria-labelledby="contained-modal-title-vcenter"
-					centered closeButton>
-					<Modal.Header>
-						<Modal.Title>{errorModalTitle}</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>{errorModalBody}</Modal.Body>
-				</Modal>
-				{/* ERROR MODAL [END] */}
+				<ErrorModal showError={showError} title={errorTitle} body={errorMessage} _onHide={this._onHide} />
 			</>
 		)
 	}

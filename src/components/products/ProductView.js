@@ -150,7 +150,9 @@ class ProductView extends Component {
 								</div>
 								<div className={"col-xl-6 col-lg-6 col-md-12 col-sm-12"}>
 									<div className={"text-left"}>
-										<p><b>{product.title} ({product.type})</b></p>
+										<p>
+											<b>{product.title} ({product.type})</b>
+										</p>
 										<p style={{ textAlign: 'justify' }}>{product.description}</p>
 										<div className={"card_area row"}>
 											<div className={"col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 mb-2"}>
@@ -173,7 +175,7 @@ class ProductView extends Component {
 												<div className={"size-wrapper"}>
 													<div className={"select-size"}>
 														<label className={"size"}>Size</label>
-														<select className={"nice-select"} name="size" id={"size"} value={size} onChange={(event) => this._handleUserInput(event)}>
+														<select className={"nice-select"} name="size" id={"size"} value={size} onChange={this._handleUserInput}>
 															{sizeOptions}
 														</select>
 													</div>

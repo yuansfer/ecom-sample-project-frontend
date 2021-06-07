@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux";
+
 import _ from 'lodash';
 
 import { getCartBegin } from "../../store/cart/actions";
 import { createSecurePayBegin } from "../../store/payment/actions";
+
 import { _getKeyByValue } from "../../utils/helper";
 import { _ROUTES, _PAYMENT_METHODS, _SIZE } from "../../constants/GlobalSetting";
 
