@@ -95,6 +95,7 @@ class ProductsList extends Component {
 const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'products.list', {}),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

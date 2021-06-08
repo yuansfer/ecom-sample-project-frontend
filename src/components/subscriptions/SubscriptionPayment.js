@@ -358,6 +358,7 @@ const mapStateToProps = (state) => {
 		list: _.get(state, 'carts.list', {}),
 		doRecurringAuth: _.get(state, 'payments.doRecurringAuth', {}),
 		doRecurringPay: _.get(state, 'payments.doRecurringPay', {}),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

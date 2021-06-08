@@ -126,10 +126,12 @@ class CartInformation extends Component {
 
 		validity[name] = value && value.length > 0 ? true : false;
 
-		if (["address", "cityState", "email", "phone"].includes(name)) {
-			fieldValidationErrors[name] = !validity[name] ? `Please enter ${name === 'cityState' ? 'City, State' : name}` : ""
-		} else if (name === "country") {
-			fieldValidationErrors[name] = !validity[name] ? `Please select country` : ""
+		if (!validity[name]) {
+			if (["address", "cityState", "email", "phone"].includes(name)) {
+				fieldValidationErrors[name] = `Please enter ${name === 'cityState' ? 'City, State' : name}`
+			} else if (name === "country") {
+				fieldValidationErrors[name] = `Please select country`
+			}
 		}
 
 		if (validity[name]) {
@@ -175,6 +177,8 @@ class CartInformation extends Component {
 		// $(document).ready(function () {
 		// 	$('select').niceSelect();
 		// });
+
+		console.log('formErrors', formErrors)
 
 		return (
 			<>
@@ -307,6 +311,7 @@ const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'carts.list', {}),
 		set_shipping: _.get(state, 'carts.set_shipping', {}),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

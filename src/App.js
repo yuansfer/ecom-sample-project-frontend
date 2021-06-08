@@ -7,6 +7,8 @@ import { _ROUTES } from "./constants/GlobalSetting";
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 
+import Login from './components/auth/login';
+
 // PRODUCT ROUTES
 import ProductsList from "./components/products/ProductsList";
 import ProductView from "./components/products/ProductView";
@@ -41,11 +43,15 @@ const App = () => (
   <Container>
     <Row>
       <Col>
-        <Header />
         <BrowserRouter>
-
+          <Header />
           <Switch>
-            <Route exact path="/"><Redirect to={_ROUTES.PRODUCTS_LIST} /></Route> {/* Default Route */}
+
+            <Route exact path={_ROUTES.LOGIN} component={Login} />
+
+            {/* Default Route */}
+            <Route exact path="/"><Redirect to={_ROUTES.PRODUCTS_LIST} /></Route>
+
             <Route exact path={_ROUTES.PRODUCTS_LIST} component={ProductsList} />
             <Route exact path={_ROUTES.VIEW_PRODUCT} component={ProductView} />
 

@@ -296,6 +296,7 @@ const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'orders.get', {}),
 		generateRefund: _.get(state, 'payments.generateRefund', {}),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

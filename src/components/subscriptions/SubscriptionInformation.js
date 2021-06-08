@@ -323,6 +323,7 @@ const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'carts.list', {}),
 		set_shipping: _.get(state, 'carts.set_shipping', {}),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

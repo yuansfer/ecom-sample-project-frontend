@@ -28,7 +28,9 @@ export default api;
 const BASE_URL = process.env.REACT_APP_BACKEND_APP_URL;
 const DEFAULT_HEADER = {
     'Content-Type': 'application/json',
-    //Authorization: 'myspecialpassword'
+    ...(localStorage.getItem('token')) && {
+        Authorization: `${localStorage.getItem('tokenType')} ${localStorage.getItem('token')}`
+    }
 };
 
 // axios.defaults.headers = {

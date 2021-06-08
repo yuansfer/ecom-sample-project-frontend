@@ -266,6 +266,7 @@ const mapStateToProps = (state) => {
 		list: _.get(state, 'carts.list', []),
 		update: _.get(state, 'carts.update', []),
 		remove: _.get(state, 'carts.remove', []),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

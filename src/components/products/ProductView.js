@@ -209,6 +209,7 @@ const mapStateToProps = (state) => {
 		added_to_cart: _.get(state, 'carts.create', {}),
 		create_subscription: _.get(state, 'carts.create_subscription', {}),
 		mode: _.get(state, 'carts.mode', {}),
+		login: _.get(state, 'auth.login', {}),
 	};
 };
 

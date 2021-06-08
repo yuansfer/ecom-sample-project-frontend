@@ -1,4 +1,6 @@
 export const _ROUTES = {
+    LOGIN: '/login',
+
     PRODUCTS_LIST: '/products',
     VIEW_PRODUCT: '/products/:id/view',
 
