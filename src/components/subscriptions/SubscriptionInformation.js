@@ -10,6 +10,7 @@ import { _ROUTES, _SIZE, _SUBSCRIPTION_MONTHS, _COUNTRIES } from "../../constant
 class SubscriptionInformation extends Component {
 
 	state = {
+		sessionId: localStorage.getItem('sessionId'),
 		customerId: localStorage.getItem('customerId'),
 		cartId: localStorage.getItem('cartId'),
 		products: [],
@@ -121,7 +122,7 @@ class SubscriptionInformation extends Component {
 		const { formValues } = this.state;
 		formValues[target.name] = target.value;
 		this.setState({ formValues });
-		this._handleValidation(target);
+		this._handleValidation({ name: target.name, value: target.value, });
 	};
 
 	_handleValidation = target => {
@@ -154,11 +155,12 @@ class SubscriptionInformation extends Component {
 	_handleContinue = event => {
 
 		event.preventDefault();
-		const { formValues, formValidity, cartId, customerId } = this.state;
+		const { formValues, formValidity, cartId, customerId, sessionId } = this.state;
 
 		if (Object.values(formValidity).every(Boolean)) {
 			this.props.setShippingBegin({
 				cart_id: cartId,
+				session_id: sessionId,
 				customer_id: customerId,
 				address: formValues.address,
 				city_state: formValues.cityState,

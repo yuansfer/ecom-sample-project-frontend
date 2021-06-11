@@ -1,4 +1,6 @@
 import axios from "axios";
+import _ from 'lodash';
+import store from '../store';
 
 /*
 const api = axios.create({
@@ -25,30 +27,34 @@ api.interceptors.response.use(
 export default api;
 */
 
+
+
 const BASE_URL = process.env.REACT_APP_BACKEND_APP_URL;
 const DEFAULT_HEADER = {
     'Content-Type': 'application/json',
-    ...(localStorage.getItem('token')) && {
-        Authorization: `${localStorage.getItem('tokenType')} ${localStorage.getItem('token')}`
-    }
 };
 
 // axios.defaults.headers = {
 //     'Content-Type': 'application/json',
 // }
 
-
-
 const API = async (method = 'GET', endpoint, payload = {}, headers = DEFAULT_HEADER) => {
     return new Promise((resolve, reject) => {
-
         //console.log('BASE_URL + endpoint', BASE_URL + endpoint)
+
+        const state = store.getState();
+        var tokenData = _.get(state, 'auth.login.tokenData', '');
 
         axios({
             method: method,
             url: BASE_URL + endpoint,
             data: payload,
-            headers: headers,
+            headers: {
+                ...headers,
+                ...(tokenData && tokenData.tokenType && tokenData.token) && {
+                    'Authorization': `${tokenData.tokenType} ${tokenData.token}`
+                }
+            },
         }).then(async (response) => {
             // const { status, data } = response;
             // (parseInt(status) === 200) ? resolve(data) : reject(data);

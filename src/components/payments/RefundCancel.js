@@ -262,10 +262,7 @@ class RefundCancel extends Component {
 
 	render() {
 
-		const { payments, validated, refundModal, cancelModal, isRefundLoading, isCancelLoading, selectedRefund, selectedCancel, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
-
-		console.log('selectedRefund', selectedRefund)
-		console.log('selectedCancel', selectedCancel)
+		const { payments, validated, refundModal, cancelModal, isRefundLoading, isCancelLoading, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
 
 		return (
 			<>

@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux";
-
 import _ from 'lodash';
 
 import { getCartBegin } from "../../store/cart/actions";
 import { createSecurePayBegin } from "../../store/payment/actions";
 
-import { _getKeyByValue } from "../../utils/helper";
+import { _getKeyByValue, _isLoggedIn } from "../../utils/helper";
 import { _ROUTES, _PAYMENT_METHODS, _SIZE } from "../../constants/GlobalSetting";
+
+// import LoginModal from '../common/LoginModal';
 
 class CartPayment extends Component {
 	state = {
+		sessionId: localStorage.getItem('sessionId'),
 		customerId: localStorage.getItem('customerId'),
 		cartId: localStorage.getItem('cartId'),
 		validated: false,
@@ -23,21 +25,30 @@ class CartPayment extends Component {
 		formErrors: {
 			paymentMethod: "",
 			termConditions: "",
+			username: "",
+			password: "",
 		},
 		formValidity: {
 			paymentMethod: false,
 			termConditions: false,
 		},
 		isSubmitting: false,
+		showLogin: false,
 	};
-
 
 	componentDidMount() {
 		const { cartId } = this.state;
+		const { history, getCartBegin } = this.props;
 		if (cartId) {
-			this.props.getCartBegin({ id: cartId, purchase_mode: 'buy' });
+			getCartBegin({ id: cartId, purchase_mode: 'buy' });
+			this.setState({
+				showLogin: !_isLoggedIn() ? true : false
+			})
+
+			!_isLoggedIn() && history.push(_ROUTES.LOGIN)
+
 		} else {
-			this.props.history.push(_ROUTES.PRODUCTS_LIST)
+			history.push(_ROUTES.PRODUCTS_LIST)
 		}
 	}
 
@@ -82,7 +93,7 @@ class CartPayment extends Component {
 		}
 
 		if (prevProps.createSecurePay !== createSecurePay) {
-			const { result: { data, success, error, message } } = createSecurePay;
+			const { result: { data, success, message } } = createSecurePay;
 			if (success) {
 
 				const { ret_code, result, order_id } = data[0]
@@ -97,7 +108,7 @@ class CartPayment extends Component {
 					this.props.history.push(_ROUTES.CART_PAYMENT_DECLINE)
 				}
 			} else {
-				//this.setState({ error: message })
+				this.setState({ error: message })
 				this.props.history.push(_ROUTES.CART_PAYMENT_DECLINE)
 			}
 		}
@@ -107,7 +118,7 @@ class CartPayment extends Component {
 		const { formValues } = this.state;
 		formValues[target.name] = target.value;
 		this.setState({ formValues });
-		this._handleValidation(target);
+		this._handleValidation({ name: target.name, value: target.value, });
 	};
 
 	_handleValidation = target => {
@@ -146,10 +157,11 @@ class CartPayment extends Component {
 
 			this.setState({ isSubmitting: true });
 
-			const { cartId, customerId, formValues: { paymentMethod }, } = this.state
+			const { cartId, sessionId, customerId, formValues: { paymentMethod }, } = this.state
 			const redirectUrl = [process.env.REACT_APP_PUBLIC_URL, _ROUTES.CART_PAYMENT_SUCCESS].join('')
 
 			this.props.createSecurePayBegin({
+				sessionId: sessionId,
 				customer_id: customerId,
 				cart_id: cartId,
 				vendor: paymentMethod,
@@ -168,11 +180,14 @@ class CartPayment extends Component {
 		}
 	};
 
+	_onLoginModalHide = ({ showLogin }) => {
+		this.setState({ showLogin })
+	}
+
 	render() {
-		const { products, todaysTotal, formValues: { paymentMethod, termConditions }, formErrors, isSubmitting, } = this.state;
+		const { products, todaysTotal, formValues: { paymentMethod }, formErrors, isSubmitting, showLogin } = this.state;
 
 		const logoUrl = paymentMethod ? `../../assets/images/payment/logos/${paymentMethod}.png` : ''
-
 		return (
 			<>
 				<main>
@@ -264,9 +279,7 @@ class CartPayment extends Component {
 											</div>
 										</div>
 										<div className={"col-md-12 form-group p_star text-center mt-20 mb-20"} >
-											<button type="submit" className={"btn_1 text-uppercase mb-15 cursor-pointer"} disabled={isSubmitting}>
-												{isSubmitting ? "Please wait..." : "Continue"}
-											</button>
+											{_isLoggedIn() && <button type="submit" className={"btn_1 text-uppercase mb-15 cursor-pointer"} disabled={isSubmitting}> {isSubmitting ? "Please wait..." : "Continue"}</button>}
 										</div>
 									</div>
 								</div>
@@ -274,6 +287,7 @@ class CartPayment extends Component {
 						</div>
 					</section>
 				</main>
+				{/* {showLogin && <LoginModal _onLoginModalHide={this._onLoginModalHide} />} */}
 			</>
 		)
 	}

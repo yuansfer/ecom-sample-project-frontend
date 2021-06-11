@@ -1,17 +1,18 @@
 import type from "./types";
 import { combineReducers, } from "redux";
+import _ from 'lodash';
+import { _parseTokenData, } from "../../utils/helper";
 
-let tokenData = null;
-try {
-    tokenData = JSON.parse(localStorage.getItem('tokenData'));
-} catch (error) { }
+let tokenData = _parseTokenData();
 
 const INIT_STATE = {
-    tokenData: tokenData
+    ...(tokenData) && {
+        tokenData: tokenData,
+    }
 };
 
-
 const login = (state = INIT_STATE, action) => {
+
     switch (action.type) {
 
         case type.DO_LOGIN_SUCCESS:
@@ -19,6 +20,7 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 //loading: false,
                 result: action.payload,
+                tokenData: _.get(action, 'payload.data[0]', {}),
                 error: null
             };
 

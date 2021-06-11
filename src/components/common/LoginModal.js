@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from "react-redux";
-import { withRouter } from 'react-router-dom'
+
+import { Modal, } from 'react-bootstrap';
 
 import _ from 'lodash';
 import { doLoginBegin } from "../../store/auth/actions";
 import { _ROUTES } from "../../constants/GlobalSetting";
-
-class Login extends Component {
+class LoginModal extends React.Component {
 
   state = {
     formValues: {
@@ -21,16 +21,17 @@ class Login extends Component {
       username: false,
       password: false,
     },
+    showLogin: true,
     showError: false,
     errorMessage: '',
   }
 
   componentDidUpdate(prevProps) {
-    const { login, history } = this.props;
+    const { login } = this.props;
     if (prevProps.login !== login) {
       const { result: { success, message } } = login;
       if (success) {
-        history.goBack()
+        this.props._onLoginModalHide({ showLogin: false, })
       } else {
         this.setState({
           showError: true,
@@ -52,6 +53,7 @@ class Login extends Component {
     let { name, value, checked } = target;
 
     value = (typeof checked !== "undefined" && !checked) ? "" : value;
+
     const fieldValidationErrors = this.state.formErrors;
     const validity = this.state.formValidity;
 
@@ -92,60 +94,48 @@ class Login extends Component {
     }
   }
 
-  _onHide = ({ showError }) => {
-    this.setState({ showError })
-  }
-
   render() {
-    const { formErrors, showError, errorMessage } = this.state;
+
+    const { formErrors, showError, errorMessage, showLogin } = this.state;
 
     return (
       <>
-        <main>
-          <section className={"checkout_area section-padding buy-product"}>
-            <div className={"container"}>
-
-              <div className={"row justify-content-center"}>
-                <div className={"col-xl-7 col-lg-8 col-md-10"}>
-                  <div className={"section-tittle mb-50 text-center"}>
-                    <h2>Sign In</h2>
-                  </div>
-                </div>
+        <Modal show={showLogin} backdrop="static" keyboard={false} aria-labelledby="contained-modal-title-vcenter" centered>
+          <Modal.Header>
+            <Modal.Title>Sign In</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form className={"contact_form"} onSubmit={this._handleSubmit}>
+              <div className="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" className={`form-control ${formErrors.username ? 'is-invalid' : ''}`} placeholder="Enter Username" onChange={this._handleChange} />
+                <div className={"invalid-feedback"}>{formErrors.username}</div>
               </div>
 
-              <div className={"row justify-content-center"}>
-                <div className={"col-lg-4"}>
-                  <div className={"section-tittle mb-50 "}>
-                    <form onSubmit={this._handleSubmit}>
-                      <div className="form-group">
-                        <label>Username</label>
-                        <input type="text" id="username" name="username" className={`form-control ${formErrors.username ? 'is-invalid' : ''}`} placeholder="Enter Username" onChange={this._handleChange} />
-                        <div className={"invalid-feedback"}>{formErrors.username}</div>
-                      </div>
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" id="password" name="password" className={`form-control ${formErrors.password ? 'is-invalid' : ''}`} placeholder="Enter Password" onChange={this._handleChange} />
+                <div className={"invalid-feedback"}>{formErrors.password}</div>
+              </div>
 
-                      <div className="form-group">
-                        <label>Password</label>
-                        <input type="password" id="password" name="password" className={`form-control ${formErrors.password ? 'is-invalid' : ''}`} placeholder="Enter Password" onChange={this._handleChange} />
-                        <div className={"invalid-feedback"}>{formErrors.password}</div>
-                      </div>
-
-                      {/* <div className="form-group">
+              {/* <div className="form-group">
                     <div className="custom-control custom-checkbox">
                         <input type="checkbox" className="custom-control-input" id="customCheck1" />
                         <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
                     </div>
                 </div> */}
-                      <div className="text-center">
-                        {showError && errorMessage ? <div className="alert alert-danger" role="alert">{errorMessage}</div> : ""}
-                        <input type="submit" className={"btn_1 text-uppercase"} value="Login" />
-                      </div>
-                    </form>
-                  </div>
-                </div>
+
+              {showError && errorMessage ? <div className="alert alert-danger" role="alert">{errorMessage}</div> : ""}
+              <div className="text-center">
+                <input type="submit" className={"btn_1 text-uppercase login-button"} value="Login" />
+                <a className={"btn_1 text-uppercase login-button"} href={_ROUTES.PRODUCTS_LIST}>Continue shopping</a>
               </div>
-            </div>
-          </section>
-        </main>
+            </form>
+          </Modal.Body>
+          {/* <Modal.Footer>
+            <button type="button" className={"btn_1 text-uppercase mb-15 cursor-pointer"} onClick={() => this._onSubmit({ showLogin: false })}>Submit</button>
+          </Modal.Footer> */}
+        </Modal>
       </>
     )
   }
@@ -161,4 +151,4 @@ const mapDispatchToProps = (dispatch) => ({
   doLoginBegin: (payload) => dispatch(doLoginBegin(payload)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);

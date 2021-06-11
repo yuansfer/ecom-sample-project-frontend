@@ -235,7 +235,7 @@ class SubscriptionList extends Component {
 													</tbody>
 												</table>
 												<div className={"checkout_btn_inner float-right"}>
-													<a className={"btn_1 text-uppercase mb-15"} onClick={() => this._handleSubscribe()} href="#">Subscribe</a>
+													<a href="javascript:void(0)" className={"btn_1 text-uppercase mb-15"} onClick={() => this._handleSubscribe()}>Subscribe</a>
 												</div>
 											</div>
 										</div>

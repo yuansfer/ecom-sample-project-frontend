@@ -5,12 +5,8 @@ import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import store from "./store/index";
-
-// import { $, jQuery } from 'jquery';
-// window.$ = $;
-// window.jQuery = jQuery;
-
-localStorage.setItem('customerId', 1)
+import { setSessionId } from "./utils/helper";
+setSessionId()
 
 ReactDOM.render(
   <React.StrictMode>

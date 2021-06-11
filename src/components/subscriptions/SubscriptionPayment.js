@@ -153,7 +153,7 @@ class SubscriptionPayment extends Component {
 		const { formValues } = this.state;
 		formValues[target.name] = target.value;
 		this.setState({ formValues });
-		this._handleValidation(target);
+		this._handleValidation({ name: target.name, value: target.value, });
 	};
 
 	_handleValidation = target => {

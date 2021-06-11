@@ -15,7 +15,7 @@ class ProductView extends Component {
 		const { match: { params: { id } } } = props;
 
 		this.state = {
-			// SET CUSTOMER IN LOCAL STORAGE TEMPERORY
+			sessionId: localStorage.getItem('sessionId'),
 			customerId: localStorage.getItem('customerId'),
 			productId: id,
 			qty: 1,
@@ -25,22 +25,17 @@ class ProductView extends Component {
 			showError: false,
 			errorMessage: '',
 		};
-
-		[
-			'_handleAddToCart',
-			'_handleSubscribe',
-		].map((fn) => this[fn] = this[fn].bind(this));
 	}
 
 	componentDidMount() {
 
-		const { productId, customerId } = this.state;
+		const { productId, customerId, sessionId } = this.state;
 		if (productId) {
 			this.props.getProductBegin({ id: productId });
 		}
 
-		if (customerId) {
-			this.props.getCartModeBegin({ customer_id: customerId });
+		if (customerId || sessionId) {
+			this.props.getCartModeBegin({ customer_id: customerId, session_id: sessionId });
 		}
 	}
 
@@ -96,17 +91,32 @@ class ProductView extends Component {
 		}
 	}
 
-	_handleAddToCart(id) {
-		const { customerId, size, qty } = this.state;
-		this.props.addToCartBegin({ customer_id: customerId, product_id: id, qty: qty, size: size, purchase_mode: 'buy' });
+	_handleAddToCart = (id) => {
+		const { customerId, sessionId, size, qty } = this.state;
+		this.props.addToCartBegin({
+			customer_id: customerId,
+			session_id: sessionId,
+			product_id: id,
+			qty: qty,
+			size: size,
+			purchase_mode: 'buy'
+		});
 	}
 
-	_handleSubscribe(id) {
-		const { customerId, size, qty } = this.state;
-		this.props.addSubscriptionBegin({ customer_id: customerId, product_id: id, qty: qty, size: size, purchase_mode: 'subscribe', subscribe_month: 1 });
+	_handleSubscribe = (id) => {
+		const { customerId, sessionId, size, qty } = this.state;
+		this.props.addSubscriptionBegin({
+			customer_id: customerId,
+			session_id: sessionId,
+			product_id: id,
+			qty: qty,
+			size: size,
+			purchase_mode: 'subscribe',
+			subscribe_month: 1
+		});
 	}
 
-	_handleUserInput = (e) => {
+	_handleChange = (e) => {
 		const name = e.target.name;
 		const value = e.target.value;
 		this.setState({ [name]: value });
@@ -166,7 +176,7 @@ class ProductView extends Component {
 													<label className={"qty"}>Quantity</label>
 													<div className={"product_count d-inline-block"}>
 														<span className={"product_count_item inumber-decrement cursor-pointer"} onClick={() => this._handleUpdateQty('minus')}> <i className={"ti-minus"}></i></span>
-														<input className={"product_count_item input-number"} type="text" id={"qty"} value={qty} min="1" />
+														<input className={"product_count_item input-number"} type="text" name="qty" id="qty" value={qty} min="1" />
 														<span className={"product_count_item number-increment cursor-pointer"} onClick={() => this._handleUpdateQty('plus')}> <i className={"ti-plus"}></i></span>
 													</div>
 												</div>
@@ -175,7 +185,7 @@ class ProductView extends Component {
 												<div className={"size-wrapper"}>
 													<div className={"select-size"}>
 														<label className={"size"}>Size</label>
-														<select className={"nice-select"} name="size" id={"size"} value={size} onChange={this._handleUserInput}>
+														<select className={"nice-select"} name="size" id="size" value={size} onChange={this._handleChange}>
 															{sizeOptions}
 														</select>
 													</div>
@@ -209,7 +219,6 @@ const mapStateToProps = (state) => {
 		added_to_cart: _.get(state, 'carts.create', {}),
 		create_subscription: _.get(state, 'carts.create_subscription', {}),
 		mode: _.get(state, 'carts.mode', {}),
-		login: _.get(state, 'auth.login', {}),
 	};
 };
 

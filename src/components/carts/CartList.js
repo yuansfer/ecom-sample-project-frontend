@@ -83,7 +83,7 @@ class CartList extends Component {
 		}
 
 		if (prevProps.remove !== remove) {
-			const { result: { data, success } } = remove;
+			//const { result: { data, success } } = remove;
 			this._loadCartProducts()
 		}
 	}

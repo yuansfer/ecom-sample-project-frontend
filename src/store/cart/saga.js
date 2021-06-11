@@ -112,9 +112,10 @@ function* addSubscriptionWatcher() {
 
 function* getCartModeWorker(action) {
 
-  const { payload: { customer_id } } = action;
+  const { payload: { customer_id, session_id } } = action;
 
-  const queryString = customer_id ? '?customer_id=' + customer_id : '';
+  var queryString = customer_id ? '?customer_id=' + customer_id : '';
+  queryString += session_id ? '?session_id=' + session_id : '';
   const newUrl = [url, 'mode', queryString].join('/')
 
   try {

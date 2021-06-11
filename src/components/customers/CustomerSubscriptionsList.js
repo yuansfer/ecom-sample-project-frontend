@@ -31,12 +31,6 @@ class CustomerSubscriptionsList extends Component {
 			errorModalTitle: '',
 			errorModalBody: '',
 		};
-
-		[
-			'_handleCloseCancelAutoPayModal',
-			'_handleDisplayCancelAutoPayModel',
-			'_cancelAutoPay',
-		].map((fn) => this[fn] = this[fn].bind(this));
 	}
 
 	componentDidMount() {
@@ -61,13 +55,11 @@ class CustomerSubscriptionsList extends Component {
 
 					const _payments = _.map((data || []), order => {
 
-						const { id, customer_id, customer, products, subscribe_payment, cancel_subscription } = order;
+						const { id, customer_id, vendor, customer, products, subscribe_payment, cancel_subscription } = order;
 						const { purchase_mode } = products[0];
 
 						if (purchase_mode === 'subscribe') {
-
 							if (subscribe_payment && subscribe_payment.id) {
-								const vendor = _.get(subscribe_payment, 'recurring_auth.vendor', '')
 								return {
 									purchase_mode: purchase_mode,
 									order_id: id,
@@ -146,13 +138,13 @@ class CustomerSubscriptionsList extends Component {
 	}
 
 	/* Cancel Auto Pay [START] */
-	_handleCloseCancelAutoPayModal() {
+	_handleCloseCancelAutoPayModal = () => {
 		this.setState({
 			cancelModal: false
 		})
 	}
 
-	_handleDisplayCancelAutoPayModel() {
+	_handleDisplayCancelAutoPayModel = () => {
 		if (this.state.selectedCancel.length > 0) {
 			this.setState({
 				cancelModal: true
@@ -166,7 +158,7 @@ class CustomerSubscriptionsList extends Component {
 		}
 	}
 
-	_cancelAutoPay() {
+	_cancelAutoPay = () => {
 		const { selectedCancel } = this.state;
 		this.setState({ isCancelLoading: true, cancelModal: false })
 		for (const sr of selectedCancel) {
@@ -178,11 +170,7 @@ class CustomerSubscriptionsList extends Component {
 
 	render() {
 
-		const { payments, validated, cancelModal, isCancelLoading, selectedCancel, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
-
-		console.log('payments', payments)
-		console.log('selectedCancel', selectedCancel)
-		console.log(payments.length)
+		const { payments, validated, cancelModal, isCancelLoading, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
 		return (
 			<>
 				<main>

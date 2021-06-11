@@ -1,21 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from "react-redux";
-
 import _ from 'lodash';
-
 import { getProductsBegin } from "../../store/product/actions";
-class ProductsList extends Component {
-	constructor(props) {
-		super(props);
+class ProductsList extends React.Component {
 
-		localStorage.setItem('orderId', '')
-
-		this.state = {
-			products: [],
-		};
+	state = {
+		products: []
 	}
 
 	componentDidMount() {
+		localStorage.removeItem('orderId')
 		this.props.getProductsBegin();
 	}
 
@@ -27,9 +21,8 @@ class ProductsList extends Component {
 			if (success) {
 				this.setState({
 					products: data,
-				}, () => {
+				})
 
-				});
 			} else {
 				// ERROR
 			}
@@ -95,7 +88,6 @@ class ProductsList extends Component {
 const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'products.list', {}),
-		login: _.get(state, 'auth.login', {}),
 	};
 };
 

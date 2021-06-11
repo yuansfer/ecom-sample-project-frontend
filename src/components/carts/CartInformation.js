@@ -14,6 +14,7 @@ import { _ROUTES, _SIZE, _COUNTRIES } from "../../constants/GlobalSetting";
 class CartInformation extends Component {
 
 	state = {
+		sessionId: localStorage.getItem('sessionId'),
 		customerId: localStorage.getItem('customerId'),
 		cartId: localStorage.getItem('cartId'),
 		products: [],
@@ -112,11 +113,10 @@ class CartInformation extends Component {
 		const { formValues } = this.state;
 		formValues[target.name] = target.value;
 		this.setState({ formValues });
-		this._handleValidation(target);
+		this._handleValidation({ name: target.name, value: target.value, });
 	};
 
 	_handleValidation = target => {
-
 		let { name, value, checked } = target;
 
 		value = (typeof checked !== "undefined" && !checked) ? "" : value;
@@ -126,12 +126,10 @@ class CartInformation extends Component {
 
 		validity[name] = value && value.length > 0 ? true : false;
 
-		if (!validity[name]) {
-			if (["address", "cityState", "email", "phone"].includes(name)) {
-				fieldValidationErrors[name] = `Please enter ${name === 'cityState' ? 'City, State' : name}`
-			} else if (name === "country") {
-				fieldValidationErrors[name] = `Please select country`
-			}
+		if (["address", "cityState", "email", "phone"].includes(name)) {
+			fieldValidationErrors[name] = !validity[name] ? `Please enter ${name === 'cityState' ? 'City, State' : name}` : ""
+		} else if (name === "country") {
+			fieldValidationErrors[name] = !validity[name] ? `Please select country` : ""
 		}
 
 		if (validity[name]) {
@@ -147,12 +145,11 @@ class CartInformation extends Component {
 	_handleContinue = event => {
 
 		event.preventDefault();
-		const { formValues, formValidity, cartId, customerId } = this.state;
+		const { formValues, formValidity, cartId } = this.state;
 
 		if (Object.values(formValidity).every(Boolean)) {
 			this.props.setShippingBegin({
 				cart_id: cartId,
-				customer_id: customerId,
 				address: formValues.address,
 				city_state: formValues.cityState,
 				country: formValues.country,
@@ -177,8 +174,6 @@ class CartInformation extends Component {
 		// $(document).ready(function () {
 		// 	$('select').niceSelect();
 		// });
-
-		console.log('formErrors', formErrors)
 
 		return (
 			<>
