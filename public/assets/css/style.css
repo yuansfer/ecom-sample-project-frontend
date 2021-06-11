@@ -2043,3 +2043,7 @@ input:focus {
 .subTotal {
     background-color: #f7f7f7
 }
+.login-button {
+    padding: 9px 19px;
+    margin-right: 20px;
+}
