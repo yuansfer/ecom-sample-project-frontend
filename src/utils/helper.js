@@ -19,14 +19,16 @@ export const _isLoggedIn = () => {
     }
 }
 
-export const _loginLocalStorage = ({ tokenData, customerId }) => {
+export const _loginLocalStorage = ({ tokenData, customerId, userId }) => {
     localStorage.setItem('tokenData', tokenData);
+    localStorage.setItem('userId', userId);
     localStorage.setItem('customerId', customerId);
     localStorage.removeItem('sessionId');
 }
 
 export const _logoutLocalStorage = () => {
     localStorage.removeItem('tokenData');
+    localStorage.removeItem('userId');
     localStorage.removeItem('customerId');
     localStorage.removeItem('sessionId');
     localStorage.removeItem('cartId');
