@@ -16,7 +16,7 @@ class ErrorModal extends Component {
 					aria-labelledby="contained-modal-title-vcenter"
 					centered>
 					<Modal.Header closeButton>
-						<Modal.Title>{this.props.title}</Modal.Title>
+						<Modal.Title>{this.props.title || 'Error'}</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>{this.props.body}</Modal.Body>
 				</Modal>

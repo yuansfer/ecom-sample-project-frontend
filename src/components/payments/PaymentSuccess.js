@@ -26,11 +26,6 @@ class PaymentSuccess extends Component {
 			error: '',
 			isSubmitting: false,
 		};
-
-		[
-			'_handleReturnHome',
-			'_handleRefundModal',
-		].map((fn) => this[fn] = this[fn].bind(this));
 	}
 
 	componentDidMount() {
@@ -112,24 +107,24 @@ class PaymentSuccess extends Component {
 		}
 	}
 
-	_handleReturnHome() {
+	_handleReturnHome = () => {
 		this.props.history.push(_ROUTES.PRODUCTS_LIST)
 	}
 
-	_handleRefundModal() {
+	_handleRefundModal = () => {
 		this.setState({
 			refundModal: true
 		})
 	}
 
-	_handleGenerateRefund() {
+	_handleGenerateRefund = () => {
 		this.setState({ isSubmitting: true })
 
 		const { orderId, customerId } = this.state;
 		this.props.generateRefundBegin({ customer_id: customerId, order_id: orderId });
 	}
 
-	_handleCloseRefundModal() {
+	_handleCloseRefundModal = () => {
 		this.setState({
 			refundModal: false,
 			isSubmitting: false,
@@ -241,8 +236,7 @@ class PaymentSuccess extends Component {
 
 				{/* Refund Request Models [START] */}
 				<Modal show={refundModal}
-					aria-labelledby="contained-modal-title-vcenter"
-					centered>
+					backdrop="static" keyboard={false} aria-labelledby="contained-modal-title-vcenter" centered>
 					<Modal.Header>
 						<Modal.Title>Refund Request Confirmation</Modal.Title>
 					</Modal.Header>

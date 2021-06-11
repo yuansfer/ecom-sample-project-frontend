@@ -11,18 +11,22 @@ export const _buildQueryParams = (obj) => Object.keys(obj).reduce(function (a, k
 export const _uuid = () => uuidv4()
 
 export const _isLoggedIn = () => {
-    if (localStorage.getItem('tokenData') && localStorage.getItem('customerId')) {
-        const { customerId } = JSON.parse(localStorage.getItem('tokenData'));
-        return parseInt(localStorage.getItem('customerId')) === parseInt(customerId) ? true : false;
-    } else {
-        return false;
+    var flag = false;
+    if (localStorage.getItem('tokenData')) {
+        const { customerId, userId } = JSON.parse(localStorage.getItem('tokenData'));
+        if (localStorage.getItem('customerId')) {
+            flag = parseInt(localStorage.getItem('customerId')) === parseInt(customerId) ? true : false;
+        } else if (localStorage.getItem('userId')) {
+            flag = parseInt(localStorage.getItem('userId')) === parseInt(userId) ? true : false;
+        }
     }
+    return flag;
 }
 
 export const _loginLocalStorage = ({ tokenData, customerId, userId }) => {
     localStorage.setItem('tokenData', tokenData);
     localStorage.setItem('userId', userId);
-    localStorage.setItem('customerId', customerId);
+    customerId && localStorage.setItem('customerId', customerId);
     localStorage.removeItem('sessionId');
 }
 
@@ -55,3 +59,7 @@ export const setSessionId = (data) => {
         localStorage.setItem('sessionId', _uuid())
     }
 }
+
+export const isCustomer = (data) => localStorage.getItem('customerId')
+
+export const isMerchant = (data) => localStorage.getItem('userId')

@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 
 import _ from 'lodash';
 import { doLoginBegin } from "../../store/auth/actions";
+import { isMerchant } from "../../utils/helper";
 import { _ROUTES } from "../../constants/GlobalSetting";
 
 class Login extends Component {
@@ -30,7 +31,12 @@ class Login extends Component {
     if (prevProps.login !== login) {
       const { result: { success, message } } = login;
       if (success) {
-        history.goBack()
+        if (isMerchant()) {
+          history.push(_ROUTES.PAYMENT_REFUND_CANCEL);
+        } else {
+          history.goBack();
+        }
+
       } else {
         this.setState({
           showError: true,
