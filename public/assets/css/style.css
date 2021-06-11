@@ -2047,3 +2047,10 @@ input:focus {
     padding: 9px 19px;
     margin-right: 20px;
 }
+.allow-to-click {
+    background-color: #ffffff !important;
+}
+
+.prevent-to-click {
+    background-color: #ffd5d5 !important;
+}
