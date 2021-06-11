@@ -84,7 +84,7 @@ class App extends Component {
                   {/* Cart Routes */}
                   <PublicRoute restricted={false} path={_ROUTES.CARTS_LIST} component={CartsList} exact />
                   <PublicRoute restricted={false} path={_ROUTES.VIEW_CART} component={CartList} exact />
-                  <PublicRoute restricted={false} path={_ROUTES.INFORMATION} component={CartInformation} exact />
+                  <PublicRoute restricted={false} path={_ROUTES.CART_SHIPPING} component={CartInformation} exact />
 
                   {/* Cart Payment Routes */}
                   <PrivateRoute path={_ROUTES.CART_PAYMENT} component={CartPayment} exact />
@@ -95,7 +95,7 @@ class App extends Component {
 
                   {/* Subscription Routes */}
                   <PublicRoute restricted={false} path={_ROUTES.VIEW_SUBSCRIPTION} component={SubscriptionList} exact />
-                  <PublicRoute restricted={false} path={_ROUTES.SUBSCRIPTION_INFORMATION} component={SubscriptionInformation} exact />
+                  <PublicRoute restricted={false} path={_ROUTES.SUBSCRIPTION_SHIPPING} component={SubscriptionInformation} exact />
 
                   {/* Subscription Payment Routes */}
                   <PrivateRoute path={_ROUTES.SUBSCRIPTION_PAYMENT} component={SubscriptionPayment} exact />
@@ -121,11 +121,11 @@ class App extends Component {
             <Route exact path={_ROUTES.CARTS_LIST} component={CartsList} />
 
             <Route exact path={_ROUTES.VIEW_CART} component={CartList} />
-            <Route exact path={_ROUTES.INFORMATION} component={CartInformation} />
+            <Route exact path={_ROUTES.CART_SHIPPING} component={CartInformation} />
             <Route exact path={_ROUTES.CART_PAYMENT} component={CartPayment} />
 
             <Route exact path={_ROUTES.VIEW_SUBSCRIPTION} component={SubscriptionList} />
-            <Route exact path={_ROUTES.SUBSCRIPTION_INFORMATION} component={SubscriptionInformation} />
+            <Route exact path={_ROUTES.SUBSCRIPTION_SHIPPING} component={SubscriptionInformation} />
             <Route exact path={_ROUTES.SUBSCRIPTION_PAYMENT} component={SubscriptionPayment} />
 
             <Route exact path={_ROUTES.CART_PAYMENT_SUCCESS} component={PaymentSuccess} />
@@ -182,7 +182,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 //             {/* Cart Routes */}
 //             <PublicRoute restricted={false} path={_ROUTES.CARTS_LIST} component={CartsList} exact />
 //             <PublicRoute restricted={false} path={_ROUTES.VIEW_CART} component={CartList} exact />
-//             <PublicRoute restricted={false} path={_ROUTES.INFORMATION} component={CartInformation} exact />
+//             <PublicRoute restricted={false} path={_ROUTES.CART_SHIPPING} component={CartInformation} exact />
 
 //             {/* Cart Payment Routes */}
 //             {/* <PrivateRoute path={_ROUTES.CART_PAYMENT} component={CartPayment} exact /> */}
@@ -192,7 +192,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 //             {/* Subscription Routes */}
 //             <PublicRoute restricted={false} path={_ROUTES.VIEW_SUBSCRIPTION} component={SubscriptionList} exact />
-//             <PublicRoute restricted={false} path={_ROUTES.SUBSCRIPTION_INFORMATION} component={SubscriptionInformation} exact />
+//             <PublicRoute restricted={false} path={_ROUTES.SUBSCRIPTION_SHIPPING} component={SubscriptionInformation} exact />
 
 //             {/* Subscription Payment Routes */}
 //             {/* <PrivateRoute path={_ROUTES.SUBSCRIPTION_PAYMENT} component={SubscriptionPayment} exact /> */}
@@ -216,11 +216,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 //             <Route exact path={_ROUTES.CARTS_LIST} component={CartsList} />
 
 //             <Route exact path={_ROUTES.VIEW_CART} component={CartList} />
-//             <Route exact path={_ROUTES.INFORMATION} component={CartInformation} />
+//             <Route exact path={_ROUTES.CART_SHIPPING} component={CartInformation} />
 //             <Route exact path={_ROUTES.CART_PAYMENT} component={CartPayment} />
 
 //             <Route exact path={_ROUTES.VIEW_SUBSCRIPTION} component={SubscriptionList} />
-//             <Route exact path={_ROUTES.SUBSCRIPTION_INFORMATION} component={SubscriptionInformation} />
+//             <Route exact path={_ROUTES.SUBSCRIPTION_SHIPPING} component={SubscriptionInformation} />
 //             <Route exact path={_ROUTES.SUBSCRIPTION_PAYMENT} component={SubscriptionPayment} />
 
 //             <Route exact path={_ROUTES.CART_PAYMENT_SUCCESS} component={PaymentSuccess} />

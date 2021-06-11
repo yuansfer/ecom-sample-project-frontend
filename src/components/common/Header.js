@@ -5,12 +5,12 @@ import { Link, withRouter } from 'react-router-dom'
 import _ from 'lodash';
 import { Nav } from 'react-bootstrap';
 
-import { _logoutLocalStorage, _isLoggedIn } from "../../utils/helper";
+import { _logoutLocalStorage, _isLoggedIn, isMerchant, isCustomer } from "../../utils/helper";
 import { doLogoutBegin } from "../../store/auth/actions";
 import { _ROUTES } from "../../constants/GlobalSetting";
+//const $ = window.$;
 
 class Header extends Component {
-
 	componentDidUpdate(prevProps) {
 		const { logout, history } = this.props;
 		if (prevProps.logout !== logout) {
@@ -27,7 +27,8 @@ class Header extends Component {
 	}
 
 	render() {
-		const loggedInUser = _isLoggedIn()
+		console.log(isCustomer())
+		console.log(isMerchant())
 		return (
 			<>
 				<header>
@@ -90,7 +91,7 @@ class Header extends Component {
 												</Nav.Item>
 											</li>
 
-											{loggedInUser && <li>
+											{(_isLoggedIn() && isCustomer()) && <li>
 												<Nav.Item>
 													<Link to={_ROUTES.CUSTOMER_SUBSCRIPTION}>
 														<span className={"flaticon-user"}>
@@ -100,7 +101,19 @@ class Header extends Component {
 											</li>
 											}
 
-											{!loggedInUser && <li>
+											{(_isLoggedIn() && isMerchant()) && <li>
+												<Nav.Item>
+													<Link to={_ROUTES.PAYMENT_REFUND_CANCEL}>
+														<span>
+															<i className="fa fa-list" ></i>
+														</span>
+													</Link>
+												</Nav.Item>
+											</li>
+											}
+
+
+											{!_isLoggedIn() && <li>
 												<Nav.Item>
 													<Link to={_ROUTES.LOGIN}>
 														<span>
@@ -111,7 +124,7 @@ class Header extends Component {
 											</li>
 											}
 
-											{loggedInUser &&
+											{_isLoggedIn() &&
 												<li>
 													<span className="logout" onClick={() => this._handleLogout()}>
 														<i className="fa fa-sign-out-alt" ></i>

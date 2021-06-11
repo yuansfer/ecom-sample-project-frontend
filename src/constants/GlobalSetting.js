@@ -7,11 +7,11 @@ export const _ROUTES = {
     CARTS_LIST: '/carts-list',
 
     VIEW_CART: '/carts',
-    INFORMATION: '/carts/information',
+    CART_SHIPPING: '/carts/shipping',
     CART_PAYMENT: '/carts/payment',
 
     VIEW_SUBSCRIPTION: '/subscriptions',
-    SUBSCRIPTION_INFORMATION: '/subscriptions/information',
+    SUBSCRIPTION_SHIPPING: '/subscriptions/shipping',
     SUBSCRIPTION_PAYMENT: '/subscriptions/payment',
 
     CART_PAYMENT_SUCCESS: '/payments/success',

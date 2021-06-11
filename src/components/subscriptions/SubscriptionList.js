@@ -107,7 +107,7 @@ class SubscriptionList extends Component {
 	}
 
 	_handleSubscribe = () => {
-		this.props.history.push(_ROUTES.SUBSCRIPTION_INFORMATION)
+		this.props.history.push(_ROUTES.SUBSCRIPTION_SHIPPING)
 	}
 
 	_handleUpdateCartProduct = (e, p, field) => {

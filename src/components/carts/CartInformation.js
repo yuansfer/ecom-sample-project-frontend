@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux";
-
-// import $ from 'jquery';
-
-// import '../../assets/css/nice-select.css';
-// import '../../assets/js/jquery.nice-select.min.js'
-
 import _ from 'lodash';
 
 import { getCartBegin, setShippingBegin } from "../../store/cart/actions";
 import { _getKeyByValue } from "../../utils/helper";
 import { _ROUTES, _SIZE, _COUNTRIES } from "../../constants/GlobalSetting";
+const $ = window.$;
 class CartInformation extends Component {
 
 	state = {
@@ -264,7 +259,6 @@ class CartInformation extends Component {
 												<div className={"invalid-feedback"}>{formErrors.cityState}</div>
 											</div>
 											<div className={"col-md-12 form-group p_star mb-20"}>
-
 												<select className={`country_select form-control ${formErrors.country ? 'is-invalid' : ''}`}
 													id="country" name="country" onChange={this._handleChange} value={country}>
 													<option value="">Select Country</option>

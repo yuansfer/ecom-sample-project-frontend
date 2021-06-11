@@ -8,8 +8,8 @@ import { cancelAutoPayBegin } from "../../store/payment/actions";
 import { getOrdersBegin } from "../../store/order/actions";
 import { _getKeyByValue } from "../../utils/helper";
 import { _PAYMENT_METHODS } from "../../constants/GlobalSetting";
+import ErrorModal from '../common/ErrorModal';
 
-//import ErrorModal from '../common/ErrorModal';
 class CustomerSubscriptionsList extends Component {
 	constructor(props) {
 		super(props);
@@ -27,9 +27,9 @@ class CustomerSubscriptionsList extends Component {
 			successModalTitle: '',
 			successModalBody: '',
 
-			errorModal: false,
-			errorModalTitle: '',
-			errorModalBody: '',
+			showError: false,
+			errorTitle: '',
+			errorMessage: '',
 		};
 	}
 
@@ -105,9 +105,9 @@ class CustomerSubscriptionsList extends Component {
 					this.setState({
 						cancelModal: false,
 						isCancelLoading: false,
-						errorModal: true,
-						errorModalTitle: 'Cancel Subscription Error',
-						errorModalBody: ret_msg,
+						showError: true,
+						errorTitle: 'Cancel Subscription Error',
+						errorMessage: ret_msg,
 					})
 				}
 				this._loadOrders()
@@ -115,9 +115,9 @@ class CustomerSubscriptionsList extends Component {
 				this.setState({
 					cancelModal: false,
 					isCancelLoading: false,
-					errorModal: true,
-					errorModalTitle: 'Cancel Subscription Error',
-					errorModalBody: message,
+					showError: true,
+					errorTitle: 'Cancel Subscription Error',
+					errorMessage: message,
 				})
 			}
 		}
@@ -151,9 +151,8 @@ class CustomerSubscriptionsList extends Component {
 			})
 		} else {
 			this.setState({
-				errorModal: true,
-				errorModalTitle: 'Cancel Subscription Error',
-				errorModalBody: 'Please select transaction for Cancel Subscription',
+				showError: true,
+				errorMessage: 'Please select transaction for Cancel Subscription',
 			})
 		}
 	}
@@ -168,9 +167,13 @@ class CustomerSubscriptionsList extends Component {
 	}
 	/* Cancel Auto Pay [END] */
 
+	_onHide = ({ showError }) => {
+		this.setState({ showError, isCancelLoading: false })
+	}
+
 	render() {
 
-		const { payments, validated, cancelModal, isCancelLoading, errorModal, errorModalTitle, errorModalBody, successModal, successModalTitle, successModalBody, } = this.state;
+		const { payments, validated, cancelModal, isCancelLoading, showError, errorTitle, errorMessage, successModal, successModalTitle, successModalBody, } = this.state;
 		return (
 			<>
 				<main>
@@ -228,14 +231,15 @@ class CustomerSubscriptionsList extends Component {
 
 																		<td align="center">
 																			<label htmlFor={"cancel-" + p.order_id}>
-																				<div>
+
+																				{p.purchase_mode === 'subscribe' && <div>
 																					<input type="checkbox"
-																						disabled={p.purchase_mode === 'subscribe' ? (p.allow_to_refund_or_cancel ? false : true) : true} className={"checkbox"} name={"cancel-" + p.order_id}
+																						disabled={!p.allow_to_refund_or_cancel} name={"cancel-" + p.order_id}
 																						id={"cancel-" + p.order_id}
 																						onChange={(e) => this._handleCheck(e, p)}
 																					/>
-																					<span className={"check-icon"}></span>
-																				</div>
+																					<span className={`check-icon cursor-pointer ${p.allow_to_refund_or_cancel ? '' : 'prevent-to-click'}`}></span>
+																				</div>}
 																			</label>
 																		</td>
 																	</tr>
@@ -259,6 +263,8 @@ class CustomerSubscriptionsList extends Component {
 					</section>
 				</main>
 
+				<ErrorModal showError={showError} title={errorTitle} body={errorMessage} _onHide={this._onHide} />
+
 				{/* CANCEL AUTO PAY MODAL [START] */}
 				<Modal show={cancelModal}
 					aria-labelledby="contained-modal-title-vcenter"
@@ -273,18 +279,6 @@ class CustomerSubscriptionsList extends Component {
 					</Modal.Footer>
 				</Modal>
 				{/* CANCEL AUTO PAY MODAL [END] */}
-
-				{/* ERROR MODAL [START] */}
-				<Modal show={errorModal}
-					onHide={() => this.setState({ errorModal: false, isCancelLoading: false })}
-					aria-labelledby="contained-modal-title-vcenter"
-					centered closeButton>
-					<Modal.Header>
-						<Modal.Title>{errorModalTitle}</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>{errorModalBody}</Modal.Body>
-				</Modal>
-				{/* ERROR MODAL [END] */}
 
 				{/* SUCCESS MODAL [START] */}
 				<Modal

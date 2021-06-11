@@ -191,7 +191,7 @@ class CartList extends Component {
 													</tbody>
 												</table>
 												<div className={"checkout_btn_inner float-right"}>
-													<a className={"btn_1 text-uppercase mb-15"} href={_ROUTES.INFORMATION}>Buy Now</a>
+													<a className={"btn_1 text-uppercase mb-15"} href={_ROUTES.CART_SHIPPING}>Buy Now</a>
 												</div>
 											</div>
 										</div>

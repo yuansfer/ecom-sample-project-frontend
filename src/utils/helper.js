@@ -60,6 +60,6 @@ export const setSessionId = (data) => {
     }
 }
 
-export const isCustomer = (data) => localStorage.getItem('customerId')
+export const isCustomer = (data) => localStorage.getItem('customerId') && localStorage.getItem('userId')
 
-export const isMerchant = (data) => localStorage.getItem('userId')
+export const isMerchant = (data) => !localStorage.getItem('customerId') && localStorage.getItem('userId')

@@ -12,41 +12,28 @@ import ErrorModal from '../common/ErrorModal';
 const $ = window.$;
 
 class RefundCancel extends Component {
-	constructor(props) {
-		super(props);
 
-		this.state = {
-			userId: localStorage.getItem('userId'),
-			payments: [],
-			validated: false,
-			selectedRefund: [],
-			selectedCancel: [],
+	state = {
+		userId: localStorage.getItem('userId'),
+		payments: [],
+		validated: false,
+		selectedRefund: [],
+		selectedCancel: [],
 
-			refundModal: false,
-			cancelModal: false,
+		refundModal: false,
+		cancelModal: false,
 
-			isRefundLoading: false,
-			isCancelLoading: false,
+		isRefundLoading: false,
+		isCancelLoading: false,
 
-			successModal: false,
-			successModalTitle: '',
-			successModalBody: '',
+		successModal: false,
+		successModalTitle: '',
+		successModalBody: '',
 
-			showError: false,
-			errorTitle: '',
-			errorMessage: '',
-		};
-
-		[
-			'_handleCloseRefundModal',
-			'_handleDisplayRefundModel',
-			'_generateRefund',
-			'_handleCloseCancelAutoPayModal',
-			'_handleDisplayCancelAutoPayModel',
-			'_cancelAutoPay',
-
-		].map((fn) => this[fn] = this[fn].bind(this));
-	}
+		showError: false,
+		errorTitle: '',
+		errorMessage: '',
+	};
 
 	componentDidMount() {
 		$('[data-toggle="tooltip"]').tooltip();
@@ -203,13 +190,13 @@ class RefundCancel extends Component {
 	}
 
 	/* Refund [START] */
-	_handleCloseRefundModal() {
+	_handleCloseRefundModal = () => {
 		this.setState({
 			refundModal: false
 		})
 	}
 
-	_handleDisplayRefundModel() {
+	_handleDisplayRefundModel = () => {
 		if (this.state.selectedRefund.length > 0) {
 			this.setState({
 				refundModal: true
@@ -222,7 +209,7 @@ class RefundCancel extends Component {
 		}
 	}
 
-	_generateRefund() {
+	_generateRefund = () => {
 		const { selectedRefund } = this.state;
 		this.setState({ isRefundLoading: true, refundModal: false })
 		for (const sr of selectedRefund) {
@@ -233,13 +220,13 @@ class RefundCancel extends Component {
 	/* Refund [END] */
 
 	/* Cancel Auto Pay [START] */
-	_handleCloseCancelAutoPayModal() {
+	_handleCloseCancelAutoPayModal = () => {
 		this.setState({
 			cancelModal: false
 		})
 	}
 
-	_handleDisplayCancelAutoPayModel() {
+	_handleDisplayCancelAutoPayModel = () => {
 		if (this.state.selectedCancel.length > 0) {
 			this.setState({
 				cancelModal: true
@@ -252,7 +239,7 @@ class RefundCancel extends Component {
 		}
 	}
 
-	_cancelAutoPay() {
+	_cancelAutoPay = () => {
 		const { selectedCancel } = this.state;
 		this.setState({ isCancelLoading: true, cancelModal: false })
 		for (const sr of selectedCancel) {
