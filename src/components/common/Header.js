@@ -128,7 +128,7 @@ class Header extends Component {
 
 											{_isLoggedIn() &&
 												<li>
-													<span className="logout" data-toggle="tooltip" title="Logout" onClick={() => this._handleLogout()}>
+												<span data-toggle="tooltip" title="Logout" onClick={() => this._handleLogout()}>
 														<i className="fa fa-sign-out-alt" ></i>
 													</span>
 												</li>}
