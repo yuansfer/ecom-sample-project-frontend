@@ -1,8 +1,11 @@
 # Ecom Sample Project (Frontend)
 
-
-## Installation
-
+## Install dependencies for server
 ```bash
 yarn install
+```
+## Run
+
+```bash
+yarn start
 ```
