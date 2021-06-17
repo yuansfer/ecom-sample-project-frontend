@@ -16,7 +16,7 @@ import PublicRoute from './components/common/PublicRoute'
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 
-import Login from './components/auth/login';
+import Login from './components/auth/Login';
 
 // PRODUCT ROUTES
 import ProductsList from "./components/products/ProductsList";
