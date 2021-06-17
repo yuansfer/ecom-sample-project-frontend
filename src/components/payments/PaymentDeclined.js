@@ -14,6 +14,7 @@ class PaymentDeclined extends Component {
 		this.state = {
 			customerId: localStorage.getItem('customerId'),
 			cartId: localStorage.getItem('cartId'),
+			httpErrorMessage: localStorage.getItem('httpErrorMessage'),
 			validated: false,
 			products: [],
 			totalQty: 0,
@@ -78,7 +79,7 @@ class PaymentDeclined extends Component {
 	}
 
 	render() {
-		const { products, todaysTotal } = this.state;
+		const { products, todaysTotal, httpErrorMessage } = this.state;
 
 		return (
 			<>
@@ -148,6 +149,9 @@ class PaymentDeclined extends Component {
 										<p className={"fail-message text-center"}>
 											Uh Oh! Your Order could not be processed
 										</p>
+										{httpErrorMessage && <div class="alert alert-danger alert-dismissible">
+											<strong>Error: </strong> {httpErrorMessage}
+										</div>}
 										<div className={"fail text-center h-full mb-15"}>
 											<img style={{ maxWidth: '350px' }} alt="Payment Failed" src={'../../assets/images/payment/fail.png'} />
 										</div>
@@ -170,7 +174,6 @@ class PaymentDeclined extends Component {
 const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'carts.list', {}),
-		login: _.get(state, 'auth.login', {}),
 	};
 };
 

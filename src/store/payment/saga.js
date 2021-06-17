@@ -10,7 +10,6 @@ function* createSecurePayWorker(action) {
   try {
     const response = yield API('POST', url + '/secure-pay', payload);
     yield put(ac.createSecurePaySuccess(response));
-
   } catch (e) {
     yield put(ac.createSecurePayFailure(e));
   }

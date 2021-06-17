@@ -128,19 +128,11 @@ class Login extends Component {
                         <input type="text" id="username" name="username" className={`form-control ${formErrors.username ? 'is-invalid' : ''}`} placeholder="Enter Username" onChange={this._handleChange} />
                         <div className={"invalid-feedback"}>{formErrors.username}</div>
                       </div>
-
                       <div className="form-group">
                         <label>Password</label>
                         <input type="password" id="password" name="password" className={`form-control ${formErrors.password ? 'is-invalid' : ''}`} placeholder="Enter Password" onChange={this._handleChange} />
                         <div className={"invalid-feedback"}>{formErrors.password}</div>
                       </div>
-
-                      {/* <div className="form-group">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                    </div>
-                </div> */}
                       <div className="text-center">
                         {showError && errorMessage ? <div className="alert alert-danger" role="alert">{errorMessage}</div> : ""}
                         <input type="submit" className={"btn_1 text-uppercase"} value="Login" />

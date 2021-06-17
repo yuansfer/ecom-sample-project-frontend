@@ -18,7 +18,6 @@ const login = (state = INIT_STATE, action) => {
         case type.DO_LOGIN_SUCCESS:
             return {
                 ...state,
-                //loading: false,
                 result: action.payload,
                 tokenData: _.get(action, 'payload.data[0]', {}),
                 error: null
@@ -27,8 +26,7 @@ const login = (state = INIT_STATE, action) => {
         case type.DO_LOGIN_FAILURE:
             return {
                 ...state,
-                //loading: false,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:
@@ -42,7 +40,6 @@ const logout = (state = {}, action) => {
         case type.DO_LOGOUT_SUCCESS:
             return {
                 ...state,
-                //loading: false,
                 result: action.payload,
                 error: null
             };
@@ -50,8 +47,7 @@ const logout = (state = {}, action) => {
         case type.DO_LOGOUT_FAILURE:
             return {
                 ...state,
-                //loading: false,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:

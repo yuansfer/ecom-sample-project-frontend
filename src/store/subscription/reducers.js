@@ -13,7 +13,7 @@ const list = (state = {}, action) => {
         case type.GET_SUBSCRIPTION_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             }
 

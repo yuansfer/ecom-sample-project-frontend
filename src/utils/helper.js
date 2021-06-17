@@ -37,6 +37,7 @@ export const _logoutLocalStorage = () => {
     localStorage.removeItem('sessionId');
     localStorage.removeItem('cartId');
     localStorage.removeItem('orderId');
+    localStorage.removeItem('httpErrorMessage');
 }
 
 export const _parseTokenData = (data) => {

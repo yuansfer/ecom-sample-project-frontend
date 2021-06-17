@@ -13,7 +13,7 @@ const create = (state = {}, action) => {
         case type.ADD_TO_CART_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -34,7 +34,7 @@ const update = (state = {}, action) => {
         case type.UPDATE_CART_PRODUCT_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -55,7 +55,7 @@ const remove = (state = {}, action) => {
         case type.REMOVE_CART_PRODUCT_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -77,7 +77,7 @@ const list = (state = {}, action) => {
         case type.GET_CART_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -100,7 +100,7 @@ const set_shipping = (state = {}, action) => {
         case type.SET_SHIPPING_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:
@@ -120,7 +120,7 @@ const create_subscription = (state = {}, action) => {
         case type.ADD_SUBSCRIPTION_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -141,7 +141,7 @@ const mode = (state = {}, action) => {
         case type.GET_CART_MODE_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 

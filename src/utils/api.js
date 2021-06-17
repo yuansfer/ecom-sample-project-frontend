@@ -1,6 +1,7 @@
 import axios from "axios";
 import _ from 'lodash';
 import store from '../store';
+import { _logoutLocalStorage } from "../utils/helper";
 
 /*
 const api = axios.create({
@@ -39,7 +40,7 @@ const DEFAULT_HEADER = {
 // }
 
 const API = async (method = 'GET', endpoint, payload = {}, headers = DEFAULT_HEADER) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         //console.log('BASE_URL + endpoint', BASE_URL + endpoint)
 
         const state = store.getState();
@@ -56,13 +57,15 @@ const API = async (method = 'GET', endpoint, payload = {}, headers = DEFAULT_HEA
                 }
             },
         }).then(async (response) => {
-            // const { status, data } = response;
-            // (parseInt(status) === 200) ? resolve(data) : reject(data);
             resolve(response.data)
-
         }).catch((error) => {
-            console.log('error', error)
-            reject(error);
+            if (error.response.status === 401) {
+                _logoutLocalStorage()
+                window.location.href = '/login';
+            } else {
+                reject(error.response.data);
+            }
+
         })
     })
 }

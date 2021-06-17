@@ -13,7 +13,7 @@ const get = (state = {}, action) => {
         case type.GET_ORDER_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -35,7 +35,7 @@ const list = (state = {}, action) => {
         case type.GET_ORDERS_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 

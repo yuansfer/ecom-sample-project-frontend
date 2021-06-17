@@ -37,6 +37,9 @@ class CartPayment extends Component {
 	};
 
 	componentDidMount() {
+
+		localStorage.setItem('httpErrorMessage', '');
+
 		const { cartId } = this.state;
 		const { history, getCartBegin } = this.props;
 		if (cartId) {
@@ -93,7 +96,9 @@ class CartPayment extends Component {
 		}
 
 		if (prevProps.createSecurePay !== createSecurePay) {
+
 			const { result: { data, success, message } } = createSecurePay;
+
 			if (success) {
 
 				const { ret_code, result, order_id } = data[0]
@@ -101,13 +106,12 @@ class CartPayment extends Component {
 					this.setState({ isSubmitting: true })
 					localStorage.setItem('orderId', order_id);
 					localStorage.setItem('cartId', '');
-					//result.cashierUrl && window.open(result.cashierUrl, '_blank');
 					result.cashierUrl && window.open(result.cashierUrl, '_self');
-					//this.props.history.push(_ROUTES.CART_PAYMENT_SUCCESS)
 				} else {
 					this.props.history.push(_ROUTES.CART_PAYMENT_DECLINE)
 				}
 			} else {
+				localStorage.setItem('httpErrorMessage', message);
 				this.setState({ error: message })
 				this.props.history.push(_ROUTES.CART_PAYMENT_DECLINE)
 			}
@@ -297,7 +301,6 @@ const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'carts.list', {}),
 		createSecurePay: _.get(state, 'payments.createSecurePay', {}),
-		login: _.get(state, 'auth.login', {}),
 	};
 };
 

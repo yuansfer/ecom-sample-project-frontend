@@ -49,6 +49,9 @@ class SubscriptionPayment extends Component {
 	}
 
 	componentDidMount() {
+
+		localStorage.setItem('httpErrorMessage', '');
+
 		const { cartId, customerId, tmp } = this.state;
 		if (cartId) {
 			this.props.getCartBegin({ id: cartId, purchase_mode: 'subscribe' });
@@ -358,7 +361,6 @@ const mapStateToProps = (state) => {
 		list: _.get(state, 'carts.list', {}),
 		doRecurringAuth: _.get(state, 'payments.doRecurringAuth', {}),
 		doRecurringPay: _.get(state, 'payments.doRecurringPay', {}),
-		login: _.get(state, 'auth.login', {}),
 	};
 };
 

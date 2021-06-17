@@ -8,10 +8,16 @@ import { Nav } from 'react-bootstrap';
 import { _logoutLocalStorage, _isLoggedIn, isMerchant, isCustomer } from "../../utils/helper";
 import { doLogoutBegin } from "../../store/auth/actions";
 import { _ROUTES } from "../../constants/GlobalSetting";
-//const $ = window.$;
+const $ = window.$;
 
 class Header extends Component {
+
+	componentDidMount() {
+		$('[data-toggle="tooltip"]').tooltip();
+	}
+
 	componentDidUpdate(prevProps) {
+		$('[data-toggle="tooltip"]').tooltip();
 		const { logout, history } = this.props;
 		if (prevProps.logout !== logout) {
 			const { result: { success } } = logout;
@@ -27,8 +33,6 @@ class Header extends Component {
 	}
 
 	render() {
-		console.log(isCustomer())
-		console.log(isMerchant())
 		return (
 			<>
 				<header>
@@ -77,15 +81,10 @@ class Header extends Component {
 
 									<div className={"header-right ml-auto"}>
 										<ul>
-											{/* <li>
-												<div className={"nav-search search-switch"}>
-													<span id="search_1" className={"flaticon-search"}></span>
-												</div>
-											</li> */}
 											<li>
 												<Nav.Item>
 													<Link to={_ROUTES.CARTS_LIST}>
-														<span className={"flaticon-shopping-cart"}>
+														<span className={"flaticon-shopping-cart"} data-toggle="tooltip" title="Cart">
 														</span>
 													</Link>
 												</Nav.Item>
@@ -94,43 +93,45 @@ class Header extends Component {
 											{(_isLoggedIn() && isCustomer()) && <li>
 												<Nav.Item>
 													<Link to={_ROUTES.CUSTOMER_SUBSCRIPTION}>
-														<span className={"flaticon-user"}>
+														<span data-toggle="tooltip" title="Subscription">
+															<i className="fa fa-history" ></i>
 														</span>
 													</Link>
 												</Nav.Item>
-											</li>
-											}
+											</li>}
+
+											{(_isLoggedIn() && isCustomer()) && <li>
+												<span className={"flaticon-user"}>
+												</span>
+											</li>}
 
 											{(_isLoggedIn() && isMerchant()) && <li>
 												<Nav.Item>
 													<Link to={_ROUTES.PAYMENT_REFUND_CANCEL}>
-														<span>
+														<span data-toggle="tooltip" title="Refund/Cancel">
 															<i className="fa fa-list" ></i>
 														</span>
 													</Link>
 												</Nav.Item>
-											</li>
-											}
+											</li>}
 
 
 											{!_isLoggedIn() && <li>
 												<Nav.Item>
 													<Link to={_ROUTES.LOGIN}>
-														<span>
+														<span data-toggle="tooltip" title="Login">
 															<i className="fa fa-sign-in-alt" ></i>
 														</span>
 													</Link>
 												</Nav.Item>
-											</li>
-											}
+											</li>}
 
 											{_isLoggedIn() &&
 												<li>
-													<span className="logout" onClick={() => this._handleLogout()}>
+													<span className="logout" data-toggle="tooltip" title="Logout" onClick={() => this._handleLogout()}>
 														<i className="fa fa-sign-out-alt" ></i>
 													</span>
-												</li>
-											}
+												</li>}
 										</ul>
 									</div>
 								</div>

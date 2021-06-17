@@ -2,6 +2,7 @@ import type from "./types";
 import { combineReducers, } from "redux";
 
 const createSecurePay = (state = {}, action) => {
+
     switch (action.type) {
 
         case type.CREATE_SECURE_PAY_SUCCESS:
@@ -14,7 +15,7 @@ const createSecurePay = (state = {}, action) => {
         case type.CREATE_SECURE_PAY_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:
@@ -34,7 +35,7 @@ const list = (state = {}, action) => {
         case type.GET_PAYMENTS_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
 
@@ -57,7 +58,7 @@ const generateRefund = (state = {}, action) => {
         case type.GENERATE_REFUND_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:
@@ -78,7 +79,7 @@ const cancelAutoPay = (state = {}, action) => {
         case type.CANCEL_AUTO_PAY_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:
@@ -100,7 +101,7 @@ const doRecurringAuth = (state = {}, action) => {
         case type.RECURRING_AUTH_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:
@@ -121,7 +122,7 @@ const doRecurringPay = (state = {}, action) => {
         case type.RECURRING_PAY_FAILURE:
             return {
                 ...state,
-                result: [],
+                result: action.payload,
                 error: action.payload.error,
             };
         default:

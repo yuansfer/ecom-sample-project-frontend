@@ -345,7 +345,6 @@ class RefundCancel extends Component {
 													</table>
 												</div>
 												<div className={"refundBtn_inner float-right"} >
-
 													<button type="button" disabled={isRefundLoading} className={"btn_1 text-uppercase mb-15 cursor-pointer"} onClick={() => this._handleDisplayRefundModel()}>
 														{isRefundLoading ? 'Loading…' : 'Make Refund'}
 													</button>
@@ -358,7 +357,6 @@ class RefundCancel extends Component {
 										</Form>
 									</div>
 								</div>
-
 							}</div>
 					</section>
 				</main>

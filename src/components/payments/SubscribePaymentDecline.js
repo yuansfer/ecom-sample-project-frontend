@@ -14,6 +14,7 @@ class SubscribePaymentDecline extends Component {
 		this.state = {
 			customerId: localStorage.getItem('customerId'),
 			cartId: localStorage.getItem('cartId'),
+			httpErrorMessage: localStorage.getItem('httpErrorMessage'),
 			tmp: localStorage.getItem('tmp'),
 			validated: false,
 			products: [],
@@ -88,7 +89,7 @@ class SubscribePaymentDecline extends Component {
 	}
 
 	render() {
-		const { products, todaysTotal, monthlyTotal } = this.state;
+		const { products, todaysTotal, monthlyTotal, httpErrorMessage } = this.state;
 
 		return (
 			<>
@@ -171,7 +172,10 @@ class SubscribePaymentDecline extends Component {
 									<div className={"payment-fail eq-height"}>
 										<p className={"fail-message text-center"}>
 											Uh Oh! Your Order could not be processed
-                    </p>
+										</p>
+										{httpErrorMessage && <div class="alert alert-danger alert-dismissible">
+											<strong>Error: </strong> {httpErrorMessage}
+										</div>}
 										<div className={"fail text-center h-full mb-15"}>
 											<img style={{ maxWidth: '350px' }} alt="Payment Failed" src={'../../assets/images/payment/fail.png'} />
 										</div>
@@ -194,7 +198,6 @@ class SubscribePaymentDecline extends Component {
 const mapStateToProps = (state) => {
 	return {
 		list: _.get(state, 'carts.list', {}),
-		login: _.get(state, 'auth.login', {}),
 	};
 };
 
